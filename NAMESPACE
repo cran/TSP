@@ -1,0 +1,17 @@
+export(
+    TSP,
+    n_of_cities, 
+    insert_dummy,
+    solve_TSP,
+    tsp_concorde_help, 
+    tour_length,
+    read_TSPLIB,
+    write_TSPLIB
+    )
+
+S3method(print, TSP)
+S3method(n_of_cities, TSP)
+S3method(labels, TSP)
+S3method(image, TSP)
+
+S3method(print, TOUR)
