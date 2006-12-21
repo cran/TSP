@@ -1,88 +1,135 @@
 \name{solve_TSP}
 \alias{solve_TSP}
+\alias{solve_TSP.TSP}
+\alias{solve_TSP.ATSP}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{TSP solver interface}
 \description{
-  Common interface to all symmetric TSP solvers in this package.
+  Common interface to all TSP solvers in this package.
 }
 \usage{
 solve_TSP(x, method, control)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ the TSP given as an object of class \code{TSP}.}
-  \item{method}{ method to solve the TSP (default: farthest insertion 
+  \item{x}{ the TSP given as an object of class \code{TSP} or \code{ATSP}.}
+  \item{method}{ method to solve the TSP (default: nearest insertion 
       algorithm; see details). }
   \item{control}{ a list of arguments passed on to the TSP solver
       selected by \code{method}.}
 }
 \details{
-Currently the following methods are available:
+Currently the following methods are available: 
 \describe{
-    \item{\code{"nearest_insertion", "farthest_insertion"}}{
-        Nearest and farthest insertion algorithms for a symmetric TSP (Johnson
-        and Papadimitriou 1985).  
+\item{\code{"nearest_insertion"}, 
+    \code{"farthest_insertion"},
+    \code{"cheapest_insertion"}, 
+    \code{"arbitrary_insertion"}
+    }{ 
+    Nearest,
+    farthest, cheapest and arbitrary insertion algorithms for a symmetric and
+    asymmetric TSP (Rosenkrantz et al. 1977).  
         
-        The two algorithms are variants of the
-        minimum spanning tree algorithm for obtaining solutions to the
-        traveling salesperson problem.  The distances between cities are stored
-        in a distance matrix \eqn{D} with elements \eqn{d(i,j)}.
+    The distances between cities are stored in a distance matrix \eqn{D} with
+    elements \eqn{d(i,j)}.  All insertion algorithms start with a tour
+    consisting of an arbitrary city and choose in each step a city \eqn{k} not
+    yet on the tour. This city is inserted into the existing tour between two
+    consecutive cities \eqn{i} and \eqn{j}, such that \deqn{d(i,k) + d(k,j) -
+    d(i,j)} is minimized. The algorithms stops when all cities are on the tour.
 
-        The nearest insertion algorithm starts with a partial tour consisting
-        of a single, arbitrarily chosen city. As long as not all cities are on
-        the tour, find the city \eqn{k} which is \emph{nearest} to a city on
-        the tour. Next insert city \eqn{k} into the tour between two
-        consecutive cities \eqn{i} and \eqn{j}, such that \eqn{d(i,k) + d(k,j)
-        - d(i,j)} is minimized.  Repeat till all cities are on the tour.
+    The nearest insertion algorithm chooses city \eqn{k} in each step as the
+    city which is \emph{nearest} to a city on the tour.  
 
-        The farthest insertion algorithm used the \emph{farthest} instead of
-        the \emph{nearest} city. The idea behind this choice is to link cities
-        far away into the tour fist to establish an outline of the whole tour
-        early.
-        
-        Additional control options: \code{start} index of the first city 
-        (default: random city)
-        }
+    For farthest insertion, the city \eqn{k} is chosen in each step as the city
+    which is \emph{farthest} to any city on the tour.  
+
+    Cheapest insertion chooses the city \eqn{k} such that the cost of inserting
+    the new city (i.e., the increase in the tour's length) is minimal.  
+
+    Arbitrary insertion chooses the city \eqn{k} randomly from all cities not
+    yet on the tour.
+
+    Nearest and cheapest insertion tries to build the tour using cities which
+    fit well into the partial tour constructed so far.  The idea behind behind
+    farthest insertion is to link cities far away into the tour fist to
+    establish an outline of the whole tour early.
+
+    Additional control options: \describe{\item{\code{start}}{index of the
+    first city (default: random city).}} 
+}
+
+\item{\code{"nn", "repetitive_nn"}}{ 
+    Nearest neighbor and repetitive nearest neighbor algorithms for
+    symmetric and asymmetric TSPs (Rosenkrantz et al. 1977).
+
+    The algorithm starts with a tour containing a random city. Then the
+    algorithm always adds to the last city on the tour the nearest not yet
+    visited city. The algorithm stops when all cities are on the tour. 
+
+    Repetitive nearest neighbor constructs a nearest neighbor tour for each
+    city as the starting point and returns the shortest tour found.
+
+    Additional control options: \describe{\item{\code{start}}{index of the
+    first city (default: random city).}}
+}
+
+\item{\code{"2-opt"}}{Two edge exchange improvement procedure (Croes 1958).
     
-    \item{\code{"greedy"}}{ Greedy algorithm for a symmetric TSP. The algorithm
-        is often also called nearest neighbor algorithm (Johnson and
-        Papadimitriou 1985).
-
-        The algorithm starts with a tour containing a random city. Then the
-        algorithm always adds to last city in the tour the nearest not yet
-        visited city. The algorithm stops when all cities are on the tour.
-        
-        Additional control options: \code{start} index of the first city 
-        (default: random city)
-        }
+    This procedure systematically exchanges two edges in the graph represented
+    by the distance matrix till no improvements are possible. Exchanging two
+    edges is equal to reversing part of the tour. The resulting tour is called
+    \emph{2-optimal.}
+    Additional control options: 
+    \describe{ 
+    \item{\code{tour}}{ an existing tour which should be improved.
+    If no tour is given, a random tour is used. }
+    }
+    }
     
-    \item{\code{"concorde"}}{Concorde algorithm (Applegate et al. 2001).
-        
-          Concorde is an advanced TSP solver. The program is not included in
-          this package and has to be obtained and installed separately (see
-          \code{\link{tsp_concorde_help}}).
+\item{\code{"concorde"}}{Concorde algorithm (Applegate et al. 2001).
 
-          Additional control options: 
-          
-          \code{exe} character string containing the path to the executable 
-          (see \code{tsp_concorde_help})
+    Concorde is an advanced exact TSP solver for \emph{only symmetric} TSPs
+    based on branch-and-cut.  The program is not included in this package and
+    has to be obtained and installed separately (see
+    \code{\link{Concorde}}).
 
-          \code{clo} character string containing command line options for
-Concorde, e.g., \code{control = list(clo = "-B -v")}. See
-\code{tsp_concorde_help} on how to obtain a complete list of available
-command line options. 
+    Additional control options: 
+    \describe{
+    \item{\code{exe}}{ a character string containing the path to the executable 
+    (see \code{Concorde}).}
 
-          \code{precision} an integer which controls the number of
-decimal places used for the internal representation of distances in Concorde.
-The values given in \code{x} are multiplied by \eqn{10^{precision}} before
-being passed on to Concorde. Note that therefore the results produced by
-Concorde (especially lower and upper bounds) need to be divided by
-\eqn{10^{precision}} (i.e., the decimal point has to be shifted
-\code{precision} placed to the left). Note also, that Concorde cannot handle
-\code{Inf} which is therefore replaced by 2 times the maximum value in \code{x}
-(ignoring the infinity entries). The interface to Concorde uses 
-\code{write_TSPLIB} (see there for more information).
-        }
+    \item{\code{clo}}{ a character string containing command line options for
+    Concorde, e.g., \code{control = list(clo = "-B -v")}. See
+    \code{concorde_help} on how to obtain a complete list of available
+    command line options.} 
+
+    \item{\code{precision}}{ an integer which controls the number of
+    decimal places used for the internal representation of distances in
+    Concorde. The values given in \code{x} are multiplied by
+    \eqn{10^{precision}} before being passed on to Concorde. Note that
+    therefore the results produced by Concorde (especially lower and upper
+    bounds) need to be divided by \eqn{10^{precision}} (i.e., the decimal point
+    has to be shifted \code{precision} placed to the left). Note also, that
+    Concorde cannot handle \code{Inf} which is therefore replaced by 2 times
+    the maximum value in \code{x} (ignoring the infinity entries). The
+    interface to Concorde uses \code{write_TSPLIB} (see there for more
+    information).}
+    }
+    }
+
+\item{\code{"linkern"}}{Concorde's Chained Lin-Kernighan heuristic 
+    (Applegate et al. 2003).
+
+    The Lin-Kernighan (Lin and Kernighan 1973) 
+    heuristic uses variable \eqn{k} edge exchanges to
+    improve an initial tour.  The program is not included in this package and
+    has to be obtained and installed separately (see
+    \code{\link{Concorde}}).
+    
+    Additional control options: see Concorde above.
+    }
+    
+    
 }
 }
 \value{
@@ -91,42 +138,60 @@ An object of class \code{TOUR}.
 \seealso{
 \code{\link{TOUR}},
 \code{\link{TSP}},
+\code{\link{ATSP}},
 \code{\link{write_TSPLIB}},
-\code{\link{tsp_concorde_help}}.
+\code{\link{Concorde}}.
 }
 \references{
-Concorde home page \url{http://www.tsp.gatech.edu/concorde/}
+Concorde home page, \url{http://www.tsp.gatech.edu/concorde/}
 
 David Appletgate, Robert Bixby, Vasek Chvatal, William Cook (2001):
 TSP cuts which do not conform to the template paradigm,
 Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
 Springer.
 
-D. S. Johnson, C. H. Papadimitriou (1985): Performance guarantees for
-heuristics (chapter 5). In: E. L. Lawler, J. K. Lenstra, A.H.G. Rinnooy Kan, D.
-B. Shmoys (eds.) The traveling salesman problem - A guided tour of
-combinatorial optimization, Wiley \& Sons.
+David Applegate, William Cook and Andre Rohe (2003):      
+Chained Lin-Kernighan for Large Traveling Salesman Problems.
+\emph{INFORMS Journal on Computing, 15(1):82--92.}
+
+G. A. Croes. (1958): A method for solving traveling-salesman problems.
+\emph{Operations Research, 6(6):791--812.}
+
+S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
+traveling-salesman problem. \emph{Operations Research, 21(2): 498--516.}
+
+D. J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): 
+An analysis of several heuristics for the traveling salesman problem. 
+\emph{SIAM Journal on Computing, 6(3):563--581.}
 }
 %\author{Michael Hahsler}
 \examples{
-data("iris")
+data("USCA50")
 
 ## create TSP
-tsp <- TSP(dist(iris[1:4]))
+tsp <- USCA50
 
-## reorder
-tour1 <- solve_TSP(tsp)
-tour2 <- solve_TSP(tsp, method = "nearest_insertion")
-tour3 <- solve_TSP(tsp, method = "greedy", control = list(start = 1)) 
+## methods
+methods <- c("nearest_insertion", "cheapest_insertion", "farthest_insertion", 
+    "arbitrary_insertion", "nn", "repetitive_nn", "2-opt")
 
-tour1
-tour2
-tour3
+
+## calculate tours
+tours <- lapply(methods, FUN = function(m) solve_TSP(tsp, method = m))
+names(tours) <- methods
 
 ## use the external solver which has to be installed separately
 \dontrun{
-tour4 <- solve_TSP(tsp, method = "concorde")
-tour4
+tours$concorde  <- solve_TSP(tsp, method = "concorde")
+tours$linkern  <- solve_TSP(tsp, method = "linkern")
 }
+
+## show first tour
+tours[[1]]
+
+## compare tour lengths
+opt <- 14497 # optained by concorde
+tour_lengths <- c(sapply(tours, FUN = attr, "tour_length"), optimal = opt) 
+dotchart(tour_lengths/opt*100-100, xlab = "percent excess over optimum")
 }
 \keyword{optimize}% at least one, from doc/KEYWORDS
