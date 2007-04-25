@@ -55,6 +55,7 @@ solve_TSP <- function(x, method = NULL, control = NULL)
         order <- tsp_linkern(x, control = control)
     }
 
+    
     if(!is.integer(order)) order <- as.integer(order)
     class(order) <- c("TOUR", class(order))
     attr(order, "method") <- methods[methodNr]

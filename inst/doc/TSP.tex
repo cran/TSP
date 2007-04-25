@@ -84,8 +84,8 @@ frequency assignment in communication networks and structuring of
 matrices~\citep{Lenstra1975, Punnen2002}.
 
 In this paper we give a very brief overview of the TSP and introduce the
-R package \pkg{TSP} which provides a infrastructure for handling and
-solving TSPs in R.
+R~package \pkg{TSP} which provides a infrastructure for handling and
+solving TSPs.
 The paper is organized as follows.
 In Section~\ref{sec:TSP} we briefly present important aspects of the TSP
 including different problem formulations and approaches to solve TSPs.  In
@@ -131,30 +131,29 @@ to improve existing tours.
 TSPs can also be represented as integer and linear programming
 problems~\citep[see, e.g.,][]{Punnen2002}.  The \emph{integer programming (IP)
 formulation} is based on the assignment problem with additional
-constraints described as follows:
+constraint of no subtours:
 
 
 \[
 \begin{array}{rl}
-    \text{Minimize }     & \sum_{i=1}^n\sum_{j=1}^n{d_{ij}x_{ij}} 
+    \text{Minimize }     & \sum_{i=1}^n\sum_{j=1}^n{d_{ij}x_{ij}}
                %         = \mathrm{trace}(\mathbf{D}^T\mathbf{X})
                         \\[3mm]
     \text{Subject to }   & \\
-                        & \sum_{i=1}^n{x_{ij}=1}, j=1,\cdots,n, \\
-                        & \sum_{j=1}^n{x_{ij}=1}, i=1,\cdots,n, \\
+                        & \sum_{i=1}^n{x_{ij}=1}, \quad j=1,\cdots,n, \\
+                        & \sum_{j=1}^n{x_{ij}=1}, \quad i=1,\cdots,n, \\
                         & x_{ij} = 0 \text{ or } 1 \\
-                        & \mathbf{X} \text{ contains no subtours}\\
+                        & \text{no subtours allowed} \\
 \end{array}
 \]
 
 The solution matrix $\mathbf{X} = (x_{ij})$ of the assignment problem
 represents a tour or a collection of subtour (several unconnected cycles) where
 only edges which corresponding to elements $x_{ij} = 1$ are on the tour or a
-subtour. The additional restriction that solution contains
-no subtours are called \emph{subtour elimination
-constraints}). Unfortunately, the number of
-subtour elimination constraints grows exponentially with the number of cities
-which leads to an extremely hard problem.
+subtour. The additional restriction that no subtours are allowed (called
+\emph{subtour elimination constraints}) restrict the solution to only proper tours. Unfortunately, the number of subtour elimination constraints grows
+exponentially with the number of cities which leads to an extremely hard
+problem.
 %Several constraints
 %have been developed~\citep[see][]{Punnen2002}.
 
@@ -187,7 +186,7 @@ optimal solution.  Such a transformation requires that for any
 Hamiltonian cycle $H$ in a graph represented by its distance matrix $\mathbf{D}$
 the equality
 \begin{equation*}
-\sum_{i,j \in H}{d_{ij}} = \alpha \sum_{i,j \in H}{d'_{ij}} + \beta,
+\sum_{i,j \in H}{d_{ij}} = \alpha \sum_{i,j \in H}{d'_{ij}} + \beta
 \end{equation*}
 holds for suitable $\alpha > 0$ and $\beta \in \mathbb{R}$.  From the
 equality we see that additive and multiplicative constants leave the
@@ -314,8 +313,8 @@ The initial polyhedron $P$ used by \cite{Dantzig1954} contains all vectors
 $\mathbf{x}$ for which all $x_e \in \mathbf{x}$ satisfy $0 \le x_e \le 1$ and
 in the resulting tour each city is linked to exactly two other cities.
 Various separation algorithms for finding subsequent cuts to prevent subtours
-(\emph{subtour elimination inequalities}) and to ensure that $\mathbf{x}^*$ is
-an integer vector \citep[\emph{Gomory cuts;}][]{Gomory1963} where developed over
+(\emph{subtour elimination inequalities}) and to ensure an integer solution
+\citep[\emph{Gomory cuts;}][]{Gomory1963} where developed over
 time. The currently most efficient implementation of this method is described
 in~\cite{Applegate2000}. 
 
@@ -552,8 +551,7 @@ of the heuristic solvers employed are rather slow.
 \begin{Sinput}
 > library("TSP")
 > data("USCA50")
-> tsp <- USCA50
-> tsp
+> USCA50
 \end{Sinput}
 \begin{Soutput}
 object of class 'TSP' 
@@ -577,7 +575,7 @@ separately.
 \begin{Sinput}
 > methods <- c("nearest_insertion", "farthest_insertion", "cheapest_insertion", 
 +     "arbitrary_insertion", "nn", "repetitive_nn", "2-opt")
-> tours <- lapply(methods, FUN = function(m) solve_TSP(tsp, 
+> tours <- lapply(methods, FUN = function(m) solve_TSP(USCA50, 
 +     method = m))
 > names(tours) <- methods
 > tours[[1]]
@@ -631,7 +629,7 @@ object of class 'TSP'
 \end{Schunk}
 
 The TSP contains now an additional dummy city and we can try to solve this
-TSP and print the labels to see the resulting tour.
+TSP.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -850,7 +848,7 @@ towards Los Angeles.
 \end{Sinput}
 \end{Schunk}
 
-We use again the nearest insertion heuristic.
+We use the nearest insertion heuristic.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -894,10 +892,12 @@ and ending in Los Angles.}
 \label{fig:map3}
 \end{figure}
 
-The path moves from New York on to other cities close in the State of New York
-and it passes through cities in California before ending in Los Angeles.
-The whole path is displayed in Figure~\ref{fig:map3}. 
 
+The path jumps from New York to cities in Ontario and it passes through cities
+in California and Nevada before ending in Los Angeles. The path displayed
+in Figure~\ref{fig:map3} contains multiple crossings which indicate that
+the solution is suboptimal. The optimal solution generated by reformulating
+the problem as a TSP and using Concorde has only a tour length of $38489$.
 
 \subsection{Rearrangement clustering}
 Solving a TSP to obtain a clustering was suggested several times in the
@@ -907,16 +907,17 @@ cluster to the next larger ``jumps'' are necessary.  \cite{Climer2006} call
 this type of clustering \emph{rearrangement clustering} and suggest to
 automatically find the cluster boundaries of $k$ clusters by adding $k$
 \emph{dummy cities} which have constant distance $c$ to all other cities and
-are infinitely far from each other. \cite{Climer2006} show that in the optimal
+are infinitely far from each other. In the optimal
 solution of the TSP, the dummy cities must separate the most distant cities and
 thus represent optimal boundaries for $k$ clusters.
 
-For the example, we use the well known iris data set. Since we know that the
-dataset contains three classes denoted by the attribute called \code{"Species"},
-we insert three dummy cities into the TSP for the iris data set and perform
-rearrangement clustering using the nearest insertion algorithm. Note that this
-algorithm does not find the optimal solution and it is not guaranteed that the
-dummy cities will present the optimal cluster boundaries.
+For the following example, we use the well known iris data set. Since we know
+that the dataset contains three classes denoted by the attribute called
+\code{"Species"}, we insert three dummy cities into the TSP for the iris data
+set and perform rearrangement clustering using the default method (nearest
+insertion algorithm).  Note that this algorithm does not find the optimal
+solution and it is not guaranteed that the dummy cities will present the
+optimal cluster boundaries.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -933,7 +934,6 @@ Figure~\ref{fig:clustering}. Lighter areas represent larger
 distances. The additional red lines represent the positions of the dummy
 cities in the tour, which mark the found boundaries of the clusters.
 
-
 \begin{Schunk}
 \begin{Sinput}
 > image(tsp_dummy, tour, xlab = "objects", ylab = "objects")
@@ -942,9 +942,12 @@ cities in the tour, which mark the found boundaries of the clusters.
 \end{Sinput}
 \end{Schunk}
 
+
+
+
 \begin{figure}
 \centering
-\includegraphics[width=10cm, trim=0 20 0 0]{TSP-clustering}
+\includegraphics[width=9.5cm, height=10cm, trim=0 20 0 0]{TSP-clustering}
 \caption{Result of rearrangement clustering using three dummy cities and the 
 nearest insertion algorithm on the iris data set.}
 \label{fig:clustering}
@@ -952,10 +955,10 @@ nearest insertion algorithm on the iris data set.}
 
 
 One pair of red horizontal and vertical lines exactly separates the darker from
-lighter areas. The second pair occurs inside the larger dark.  We can look at
-how well the found partitioning fits the structure in the data given by the
-species field in the data set. Since we used the species as the city labels in
-the TSP, the labels in the tour represent the partitioning with the dummy
+lighter areas. The second pair occurs inside the larger dark block.  We can
+look at how well the found partitioning fits the structure in the data given by
+the species field in the data set. Since we used the species as the city labels
+in the TSP, the labels in the tour represent the partitioning with the dummy
 cities named `boundary' separating groups.
 
 \begin{Schunk}
@@ -1030,7 +1033,7 @@ colors.}
 \label{fig:clustering2}
 \end{figure}
 
-The result in shown in Figure~\ref{fig:clustering2}. The three true groups are
+The result in shown in Figure~\ref{fig:clustering2}. The three species are
 identified by different markers and all points connected by a single path
 represent a found cluster.  Clearly, the two groups to the right side of the
 plot are too close to be separated correctly by using just the distances

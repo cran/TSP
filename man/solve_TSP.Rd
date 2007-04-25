@@ -55,7 +55,8 @@ Currently the following methods are available:
     establish an outline of the whole tour early.
 
     Additional control options: \describe{\item{\code{start}}{index of the
-    first city (default: random city).}} 
+	first city (default: random city).}
+    }
 }
 
 \item{\code{"nn", "repetitive_nn"}}{ 
@@ -69,8 +70,10 @@ Currently the following methods are available:
     Repetitive nearest neighbor constructs a nearest neighbor tour for each
     city as the starting point and returns the shortest tour found.
 
-    Additional control options: \describe{\item{\code{start}}{index of the
-    first city (default: random city).}}
+    Additional control options: \describe{
+      \item{\code{start}}{ index of the
+	first city (default: random city). }
+}
 }
 
 \item{\code{"2-opt"}}{Two edge exchange improvement procedure (Croes 1958).
@@ -78,11 +81,16 @@ Currently the following methods are available:
     This procedure systematically exchanges two edges in the graph represented
     by the distance matrix till no improvements are possible. Exchanging two
     edges is equal to reversing part of the tour. The resulting tour is called
-    \emph{2-optimal.}
+    \emph{2-optimal.} 
+
+    By default, improvement starts with a random tour.
+    
     Additional control options: 
     \describe{ 
     \item{\code{tour}}{ an existing tour which should be improved.
     If no tour is given, a random tour is used. }
+    \item{\code{rep}}{ number of times to try 2-opt with a different initial
+        random tour (default: 1). }
     }
     }
     
@@ -126,10 +134,34 @@ Currently the following methods are available:
     has to be obtained and installed separately (see
     \code{\link{Concorde}}).
     
-    Additional control options: see Concorde above.
-    }
-    
-    
+    Additional control options: see Concorde above. 
+  }
+  
+%\item{\code{"grasp"}}{ 
+%    Greedy Randomized Adaptive Search Procedure (L.S. Pitsoulis
+%    and M.G.C. Resende 2001).
+%
+%    GRASP is a metaheuristic for combinatorial optimization. It is
+%    implemented as a multistart procedure, in which in each iteration a
+%    random route is constructed (construction phase). To find an
+%    optimum the route is improved by a local search algorithm
+%    (implemented as k-opt neighborhood search). This is
+%    repeatedly done until a stopping criterium is reached (i.e., a number of
+%    iterations).
+%
+%    Additional control options:
+%    \describe{
+%      \item{\code{start}}{index of the first city (default: random
+%	city).}
+%      \item{\code{iterations}}{an integer containing the number of
+%	iterations after the algorithm stops (default: 100 iterations).}
+%      \item{\code{max_i}}{an integer representing the max. steps to find
+%	a better solution in local search (default: 100 steps).}
+%      \item{\code{k}}{an integer needed to change k edges of the tour in
+%	local search (default: 3 cities).}
+%    }
+%  }
+  
 }
 }
 \value{
@@ -145,24 +177,27 @@ An object of class \code{TOUR}.
 \references{
 Concorde home page, \url{http://www.tsp.gatech.edu/concorde/}
 
-David Appletgate, Robert Bixby, Vasek Chvatal, William Cook (2001):
-TSP cuts which do not conform to the template paradigm,
-Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
-Springer.
+David Appletgate, Robert Bixby, Vasek Chvatal, William Cook (2001): TSP cuts
+which do not conform to the template paradigm, Computational Combinatorial
+Optimization, M. Junger and D. Naddef (editors), Springer.
 
-David Applegate, William Cook and Andre Rohe (2003):      
-Chained Lin-Kernighan for Large Traveling Salesman Problems.
-\emph{INFORMS Journal on Computing, 15(1):82--92.}
+D. Applegate, W. Cook and A. Rohe (2003): Chained Lin-Kernighan for Large
+Traveling Salesman Problems.  \emph{INFORMS Journal on Computing,
+15(1):82--92.}
 
-G. A. Croes. (1958): A method for solving traveling-salesman problems.
+G.A. Croes (1958): A method for solving traveling-salesman problems.
 \emph{Operations Research, 6(6):791--812.}
 
 S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
 traveling-salesman problem. \emph{Operations Research, 21(2): 498--516.}
 
-D. J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): 
-An analysis of several heuristics for the traveling salesman problem. 
-\emph{SIAM Journal on Computing, 6(3):563--581.}
+L.S. Pitsoulis and M.G.C. Resende (2001): Greedy randomized adaptive search
+procedures.  In P.M. Pardalos and M.G.C. Resende, editors, Handbook of Applied
+Optimization, pp. 168--181.
+
+D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis of
+several heuristics for the traveling salesman problem.  \emph{SIAM Journal on
+Computing, 6(3):563--581.}
 }
 %\author{Michael Hahsler}
 \examples{
