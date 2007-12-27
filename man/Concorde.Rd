@@ -64,13 +64,12 @@ TSP cuts which do not conform to the template paradigm,
 Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
 Springer.
 
-David Applegate and William Cook and Andre Rohe (2003): Chained Lin-Kernighan 
-for Large Traveling Salesman Problems, \emph{INFORMS Journal on Computing, 15,
-pp. 82--92.}
+David Applegate and William Cook and Andre Rohe (2003):
+Chained Lin-Kernighan for Large Traveling Salesman Problems,
+\emph{INFORMS Journal on Computing}, \bold{15}, 82--92.
 
 }
 %\author{Michael Hahsler}
 %\examples{
 %}
-}
 \keyword{documentation}% at least one, from doc/KEYWORDS

@@ -1,0 +1,14 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}
+\BOOKMARK [1][-]{section.2}{Theory}{}
+\BOOKMARK [2][-]{subsection.2.1}{Different formulations of the TSP}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Useful manipulations of the distance matrix}{section.2}
+\BOOKMARK [2][-]{subsection.2.3}{Finding exact solutions for the TSP}{section.2}
+\BOOKMARK [2][-]{subsection.2.4}{Heuristics for the TSP}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Tour construction heuristics}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Tour improvement heuristics}{subsection.2.4}
+\BOOKMARK [1][-]{section.3}{Computational infrastructure: the TSP package}{}
+\BOOKMARK [1][-]{section.4}{Examples}{}
+\BOOKMARK [2][-]{subsection.4.1}{Comparing some heuristics}{section.4}
+\BOOKMARK [2][-]{subsection.4.2}{Finding the shortest Hamiltonian path}{section.4}
+\BOOKMARK [2][-]{subsection.4.3}{Rearrangement clustering}{section.4}
+\BOOKMARK [1][-]{section.5}{Conclusion}{}

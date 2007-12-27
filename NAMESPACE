@@ -4,26 +4,25 @@ importFrom(stats, as.dist)
 importFrom(grDevices, gray.colors)
 importFrom(graphics, image.default)
 
-export(
-    TSP, 
-    ATSP, 
-    TOUR, 
-    reformulate_ATSP_as_TSP,
-    n_of_cities, 
-    insert_dummy,
-    cut_tour,
-    tour_length,
-    solve_TSP,
-    linkern_help, 
-    concorde_help, 
-    concorde_path,
-    read_TSPLIB, 
-    write_TSPLIB,
-    as.matrix,
-    as.TSP,
-    as.ATSP,
-    as.TOUR
-    )
+export(TSP, 
+       ATSP, 
+       TOUR, 
+       reformulate_ATSP_as_TSP,
+       n_of_cities, 
+       insert_dummy,
+       cut_tour,
+       tour_length,
+       solve_TSP,
+       linkern_help, 
+       concorde_help, 
+       concorde_path,
+       read_TSPLIB, 
+       write_TSPLIB,
+       ## as.matrix,
+       as.TSP,
+       as.ATSP,
+       as.TOUR
+       )
 
 ## TSP/ATSP
 S3method(print, TSP)
