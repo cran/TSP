@@ -57,7 +57,7 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
                     cur_imp = 0;
                 else if (e1 == R_PosInf || e2 == R_PosInf) 
                     cur_imp = R_PosInf;
-                else cur_imp = e1+e2 -e1_swap-e2_swap;
+                else cur_imp = (e1+e2) - (e1_swap+e2_swap);
 
                 if(cur_imp > 0) {
                     swaps++;
