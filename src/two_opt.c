@@ -77,7 +77,7 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
             e2_swap = REAL(R_matrix)
                 [M_POS(n, INTEGER(R_t)[i+1]-1, INTEGER(R_t)[0]-1)];
 
-            cur_imp = e1+e2 -e1_swap-e2_swap;
+            cur_imp = (e1+e2) - (e1_swap+e2_swap);
 
             if(cur_imp > 0) {
                 swaps++;
