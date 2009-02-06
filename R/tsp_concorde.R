@@ -97,7 +97,7 @@ tsp_concorde <- function(x, control = NULL){
     system(paste(exe, "-x", "-o", tmp_file_out , clo, tmp_file_in))
     
     if(!file.access(tmp_file_out) == 0) 
-    stop("Problems with reading Concorde's output. Is concorde properly installed?")
+    stop("Problems with reading Concorde's output.\nIs concorde properly installed?\nFor details see ? Concorde")
     ##else cat("Concorde done.\n")
     
     order <- scan(tmp_file_out, what = integer(0), quiet = TRUE)

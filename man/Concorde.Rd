@@ -4,15 +4,17 @@
 \alias{concorde_help}
 \alias{linkern_help}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{The Concorde TSP package}
+\title{Using the Concorde TSP Solver}
 \description{
-  The Concorde TSP package contains several solvers. Currently, interfaces to
+  The Concorde TSP Solver package contains several solvers. 
+  Currently, interfaces to
   the Concorde solver (Applegate et al. 2001), one of the most
   advanced and fastest TSP solvers using branch-and-cut, and
   the Chained Lin-Kernighan (Applegate et al. 2003) 
   implementation are provided in \pkg{TSP}.
   
-  The Concorde TSP package is freely available for academic research and has to
+  The Concorde TSP Solver package is freely available for academic 
+  research and has to
   be obtained separately from the Concorde web site (see details).
 }
 \usage{
