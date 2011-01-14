@@ -1,25 +1,77 @@
-\documentclass[10pt,a4paper,fleqn]{article}
+%\documentclass[10pt,a4paper,fleqn]{article}
+\documentclass[nojss]{jss}
 
 %% my packages
-\usepackage{a4wide}
-\usepackage[round,longnamesfirst]{natbib}
-\usepackage{hyperref}
+%\usepackage{a4wide}
+%\usepackage[round,longnamesfirst]{natbib}
+%\usepackage{hyperref}
 %
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[utf8]{inputenc}
 %
-\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+%\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
 \newcommand{\func}[1]{\mbox{\texttt{#1()}}}
-\newcommand{\code}[1]{\mbox{\texttt{#1}}}
-\newcommand{\pkg}[1]{\strong{#1}}
+%\newcommand{\code}[1]{\mbox{\texttt{#1}}}
+%\newcommand{\pkg}[1]{\strong{#1}}
 \newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
-\newcommand{\proglang}[1]{\textsf{#1}}
+%\newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
 
-\usepackage{Sweave}
+%\usepackage{Sweave}
 %% \VignetteIndexEntry{Introduction to TSP}
+
+\author{Michael Hahsler\\Southern Methodist University \And 
+    Kurt Hornik\\Wirtschaftsuniversit\"at Wien}
+\title{\pkg{TSP} -- Infrastructure for the Traveling
+	Salesperson Problem}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Michael Hahsler, Kurt Hornik} %% comma-separated
+\Plaintitle{TSP -- Infrastructure for the Traveling
+	        Salesperson Problem} %% without formatting
+\Shorttitle{Infrastructure for the TSP} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{ The traveling salesperson (or, salesman) problem (TSP) is a
+well known and important combinatorial optimization problem.  The goal
+is to find the shortest tour that visits each city in a given list
+exactly once and then returns to the starting city.  Despite this
+simple problem statement, solving the TSP is difficult since it
+belongs to the class of NP-complete problems.  The importance of the
+TSP arises besides from its theoretical appeal from the variety of its
+applications.  Typical applications in operations research include
+vehicle routing, computer wiring, cutting wallpaper and job
+sequencing.  The main application in statistics is combinatorial data
+analysis, e.g., reordering rows and columns of data matrices or
+identifying clusters.  In this paper we introduce the
+\proglang{R}~package \pkg{TSP} which provides a basic infrastructure
+for handling and solving the traveling salesperson problem.  The
+package features S3 classes for specifying a TSP and its (possibly
+optimal) solution as well as several heuristics to find good
+solutions. In addition, it provides an interface to \emph{Concorde},
+one of the best exact TSP solvers currently available.  }
+\Keywords{combinatorial optimization, traveling salesman problem, \proglang{R}} 
+\Plainkeywords{combinatorial optimization, traveling salesman problem, R} %% without formatting
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+      Michael Hahsler\\
+	  Computer Science and Engineering\\
+	  Lyle School of Engineering\\
+	  Southern Methodist University\\
+	  P.O. Box 750122 \\
+	  Dallas, TX 75275-0122\\
+	  E-mail: \email{mhahsler@lyle.smu.edu}\\
+      
+      Kurt Hornik\\
+	  Department of Finance, Accounting and Statistics\\
+	  Wirtschaftsuniversit\"at Wien\\
+	  1090 Wien, Austria\\
+	  E-mail: \email{kurt.hornik@wu-wien.ac.at}\\
+	  URL: \url{http://statmath.wu.ac.at/~hornik/}
+}
 
 
 
@@ -31,31 +83,31 @@ options(width = 75)
 set.seed(1234)
 @
 
-\title{Introduction to \pkg{TSP} -- Infrastructure for the Traveling
-    Salesperson Problem} 
-\author{Michael Hahsler and Kurt Hornik}
+%\title{Introduction to \pkg{TSP} -- Infrastructure for the Traveling
+%    Salesperson Problem} 
+%\author{Michael Hahsler and Kurt Hornik}
 \maketitle
 \sloppy
 
-\abstract{
-  The traveling salesperson (or, salesman) problem (TSP) is a
-  well known and important combinatorial optimization problem.  The goal
-  is to find the shortest tour that visits each city in a given list
-  exactly once and then returns to the starting city.  Despite this
-  simple problem statement, solving the TSP is difficult since it
-  belongs to the class of NP-complete problems.  The importance of the
-  TSP arises besides from its theoretical appeal from the variety of its
-  applications.  Typical applications in operations research include
-  vehicle routing, computer wiring, cutting wallpaper and job
-  sequencing.  The main application in statistics is combinatorial data
-  analysis, e.g., reordering rows and columns of data matrices or
-  identifying clusters.  In this paper we introduce the
-  \proglang{R}~package \pkg{TSP} which provides a basic infrastructure
-  for handling and solving the traveling salesperson problem.  The
-  package features S3 classes for specifying a TSP and its (possibly
-  optimal) solution as well as several heuristics to find good
-  solutions. In addition, it provides an interface to \emph{Concorde},
-  one of the best exact TSP solvers currently available.  }
+%\abstract{
+%  The traveling salesperson (or, salesman) problem (TSP) is a
+%  well known and important combinatorial optimization problem.  The goal
+%  is to find the shortest tour that visits each city in a given list
+%  exactly once and then returns to the starting city.  Despite this
+%  simple problem statement, solving the TSP is difficult since it
+%  belongs to the class of NP-complete problems.  The importance of the
+%  TSP arises besides from its theoretical appeal from the variety of its
+%  applications.  Typical applications in operations research include
+%  vehicle routing, computer wiring, cutting wallpaper and job
+%  sequencing.  The main application in statistics is combinatorial data
+%  analysis, e.g., reordering rows and columns of data matrices or
+%  identifying clusters.  In this paper we introduce the
+%  \proglang{R}~package \pkg{TSP} which provides a basic infrastructure
+%  for handling and solving the traveling salesperson problem.  The
+%  package features S3 classes for specifying a TSP and its (possibly
+%  optimal) solution as well as several heuristics to find good
+%  solutions. In addition, it provides an interface to \emph{Concorde},
+%  one of the best exact TSP solvers currently available.  }
 
 \section{Introduction}
 
@@ -109,7 +161,8 @@ paper.
 A previous version of this manuscript was published in the \emph{Journal
   of Statistical Software} \citep{TSP:Hahsler+Hornik2007}.
 
-\section{Theory}\label{sec:TSP}
+\section{Theory}
+\label{sec:TSP}
 
 In this section, we briefly summarize some aspects of the TSP which are
 important for the implementation of the \pkg{TSP} package described in
@@ -133,7 +186,8 @@ necessary time associated with traveling between locations, where the
 price for the plane ticket between two cities may be different depending
 on which way we go.
 
-\subsection{Different formulations of the TSP}\label{sec:formulations}
+\subsection{Different formulations of the TSP}
+\label{sec:formulations}
 
 Other than the permutation problem in the introduction, the TSP can also
 be formulated as a graph theoretic problem. Here the TSP is formulated
@@ -248,7 +302,8 @@ Removing the dummy cities from the resulting tour gives the  solution for the
 original ATSP.
 
 
-\subsection{Finding exact solutions for the TSP}\label{sec:exact}
+\subsection{Finding exact solutions for the TSP}
+\label{sec:exact}
 
 Finding the exact solution to a TSP with $n$ cities requires to check $(n-1)!$
 possible tours. To evaluate all possible tours is infeasible for even small TSP
@@ -337,7 +392,8 @@ ensure an integer solution \citep[\emph{Gomory cuts;}][]{Gomory1963}
 were developed over time. The currently most efficient implementation of
 this method is \emph{Concorde} described in~\cite{Applegate2000}.
 
-\subsection{Heuristics for the TSP}\label{sec:heuristics}
+\subsection{Heuristics for the TSP}
+\label{sec:heuristics}
 
 The NP-completeness of the TSP already makes it more time efficient for
 small-to-medium size TSP instances to rely on heuristics in case a good
@@ -459,7 +515,8 @@ of this infrastructure.
 \begin{figure}
     \centering
     \includegraphics[width=14cm]{overview}
-    \caption{An overview of the classes in \pkg{TSP}.\label{fig:overview}}
+    \caption{An overview of the classes in \pkg{TSP}.}
+    \label{fig:overview}
 \end{figure}
 
 
@@ -523,7 +580,8 @@ can contain a list with additional information used by the solver.
 The available algorithms are shown in Table~\ref{tab:methods}.    
 
 \begin{table}
-    \caption{Available algorithms in \pkg{TSP}.}\label{tab:methods}
+    \caption{Available algorithms in \pkg{TSP}.}
+    \label{tab:methods}
     \centering
     \begin{tabular}{llc}
     \hline
@@ -561,7 +619,8 @@ visiting all 24,978 cities in Sweden.  The computation was carried out
 on a cluster with 96 Xeon 2.8 GHz nodes and took in total almost 100 CPU
 years.
 
-\section{Examples}\label{sec:examples}
+\section{Examples}
+\label{sec:examples}
 
 In this section we provide some examples for the use of
 package~\pkg{TSP}.  We start with a simple example of how to use the
@@ -987,7 +1046,8 @@ the distances between individual points.  This problem is similar to the
 \emph{chaining effect} known from hierarchical clustering using the
 single-linkage method.
 
-\section{Conclusion}\label{sec:conclusion}
+\section{Conclusion}
+\label{sec:conclusion}
 
 In this paper we presented the R extension package \pkg{TSP} which
 implements an infrastructure to handle and solve TSPs. The package
@@ -1007,7 +1067,7 @@ code to correctly draw tours and paths on a projected map.
 
 
 %
-\bibliographystyle{abbrvnat}
+%\bibliographystyle{abbrvnat}
 \bibliography{TSP}
 %
 \end{document}
