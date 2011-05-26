@@ -3,7 +3,6 @@
 \alias{print.TOUR}
 \alias{as.TOUR}
 \alias{as.TOUR.integer}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Class TOUR -- Solution to a traveling salesperson problem}
 \description{
   Class to store the solution of a TSP. Objects of this class are returned by
@@ -20,7 +19,6 @@ as.TOUR(object)
 ## methods
 \method{print}{TOUR}(x, \ldots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an integer permutation vector or, for the methods 
       an object of class \code{TOUR}}.
@@ -38,10 +36,6 @@ For most functions, e.g., \code{tour_length} or \code{image}, the
 \code{TSP/ATSP} object used to find the tour is still needed, since the tour
 does not contain the distance information.
 }
-%\value{
-%}
-%\references{}
-%\author{}
 \seealso{
 \code{\link{TSP}},
 \code{\link{ATSP}},

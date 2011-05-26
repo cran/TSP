@@ -28,7 +28,6 @@ as.ATSP(object)
 \method{labels}{ATSP}(object, \ldots)
 \method{print}{ATSP}(x, \ldots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x, object}{ an object (a square matrix)
       to be converted into an \code{ATSP} or, for the methods, 
@@ -51,8 +50,6 @@ Objects of class \code{ATSP} are internally represented by a matrix
 
 \code{labels()} returns a vector with the names of the cities in \code{x}.
 }
-%\references{}
-%\author{}
 \seealso{
 \code{\link{TOUR}},
 \code{\link{insert_dummy}},

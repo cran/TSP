@@ -3,7 +3,6 @@
 \alias{concorde_path}
 \alias{concorde_help}
 \alias{linkern_help}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Using the Concorde TSP Solver}
 \description{
   The Concorde TSP Solver package contains several solvers. 
@@ -49,8 +48,6 @@ To get a list of all available command line options which can be used via the
 \option{-N},  \option{-Q}) are not available via \code{solve_TSP} since they
 are used by the interface.  
 }
-%\value{
-%}
 \seealso{
 \code{\link{solve_TSP}}
 }
@@ -71,7 +68,4 @@ Chained Lin-Kernighan for Large Traveling Salesman Problems,
 \emph{INFORMS Journal on Computing}, \bold{15}, 82--92.
 
 }
-%\author{Michael Hahsler}
-%\examples{
-%}
 \keyword{documentation}% at least one, from doc/KEYWORDS

@@ -26,7 +26,6 @@ as.TSP(object)
 \method{labels}{TSP}(object, \ldots)
 \method{print}{TSP}(x, \ldots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x, object}{ an object (currently \code{dist} or a symmetric
       matrix) to be converted into a \code{TSP} or, for the methods, 
@@ -49,8 +48,6 @@ Objects of class \code{TSP} are internally represented as \code{dist} objects
 
 \code{labels()} returns a vector with the names of the cities in \code{x}.
 }
-%\references{}
-%\author{}
 \seealso{
 \code{\link{TOUR}},
 \code{\link{insert_dummy}},

@@ -25,8 +25,6 @@ returns \code{NA}.
 \code{\link{ATSP}},
 \code{\link{TOUR}}.
 }
-%\references{
-%}
 \examples{
 data("USCA50")
 

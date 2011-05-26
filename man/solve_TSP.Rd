@@ -2,7 +2,6 @@
 \alias{solve_TSP}
 \alias{solve_TSP.TSP}
 \alias{solve_TSP.ATSP}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{TSP solver interface}
 \description{
   Common interface to all TSP solvers in this package.
@@ -10,7 +9,6 @@
 \usage{
 solve_TSP(x, method, control)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ the TSP given as an object of class \code{TSP} or \code{ATSP}.}
   \item{method}{ method to solve the TSP (default: nearest insertion 
@@ -199,7 +197,6 @@ D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis of
 several heuristics for the traveling salesman problem.  \emph{SIAM Journal on
 Computing, 6(3):563--581.}
 }
-%\author{Michael Hahsler}
 \examples{
 data("USCA50")
 

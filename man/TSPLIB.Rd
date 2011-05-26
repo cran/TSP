@@ -4,7 +4,6 @@
 \alias{write_TSPLIB.TSP}
 \alias{write_TSPLIB.ATSP}
 \alias{read_TSPLIB}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Read and write TSPLIB files}
 \description{
 Reads and writes TSPLIB format files. TSPLIB files can be used by most
@@ -15,7 +14,6 @@ on the TSPLIB homepage (see references).
 write_TSPLIB(x, file, precision = 6, inf = NULL, neg_inf = NULL)
 read_TSPLIB(file, precision = 0)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an object of class \code{TSP} or \code{ATSP}.}
   \item{file}{ file name or a \code{connection}.  }
@@ -44,8 +42,4 @@ decimal point has to be shifted \code{precision} placed to the left).
 }
 \references{TSPLIB home page, 
 \url{http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/}}
-%\author{ ~~who you are~~ }
-%\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-%\examples{
-%}
 \keyword{file}% at least one, from doc/KEYWORDS

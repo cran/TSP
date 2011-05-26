@@ -73,9 +73,15 @@ tsp_concorde <- function(x, control = NULL){
         }
     }
     
-    ## get temp files
+    ## get temp files and change working directory
     wd <- tempdir()
-    temp_file <- tempfile(tmpdir = wd) 
+    dir <- getwd()
+    setwd(wd)
+    on.exit(setwd(dir))
+    
+    ### fix for Windows by Stephen Eick
+    ##temp_file <- tempfile(tmpdir = wd) 
+    temp_file <- basename(tempfile(tmpdir = wd)) 
     
     ## file name needs to be unique
     tmp_file_in  <- paste(temp_file, ".dat", sep = "")
@@ -87,9 +93,6 @@ tsp_concorde <- function(x, control = NULL){
     #, neg_inf = 0)
 
     ## change working directory
-    dir <- getwd()
-    setwd(wd)
-    on.exit(setwd(dir))
     
     ## do the call and read back result
     ## we do not check return values of concorde since they are not

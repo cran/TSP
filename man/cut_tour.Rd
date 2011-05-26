@@ -14,13 +14,9 @@ cut_tour(x, cut, exclude_cut = TRUE)
   \item{exclude_cut}{exclude the city where we cut? If \code{FALSE},
     the city at the cut is included in the path as the first city.} 
 }
-%\details{
-%}
 \seealso{
 \code{\link{TOUR}}.
 }
-%\references{
-%}
 \examples{
 data("USCA50")
 
