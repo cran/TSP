@@ -22,7 +22,6 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
     double e1, e2, e1_swap, e2_swap;
     double imp, cur_imp;
     int tmp;
-    int t;
 
     // check   
     n = INTEGER(GET_DIM(R_matrix))[0];

@@ -1,0 +1,12 @@
+
+
+TSP 1.0-4
+* Fixed bug with missing row/column labels in as.ATSP() (reported by Ian Deters )
+
+TSP 1.0-3
+* Service release
+
+TSP 1.0-2
+* Fixed Windows/R bug with temp files.
+* Fixed the code for SpatialLines thanks to Roger Bivand.
+
