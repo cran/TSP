@@ -24,7 +24,7 @@ ATSP <- function(x, labels = NULL) {
 
     atsp <- as.ATSP(x)
     
-    if(!is.null(labels)) dimnames(atps) <- list(labels, labels)
+    if(!is.null(labels)) dimnames(atsp) <- list(labels, labels)
     atsp
 }
 

@@ -18,16 +18,23 @@
 
 
 
-TOUR <- function(x){
+TOUR <- function(x, method=NA, tsp=NULL){
     if(inherits(x, "TOUR")) return(x)
-    
-    as.TOUR(x)
+	
+    x <- as.TOUR(x)
+    attr(x, "method") <- as.character(method)
+    if(!is.null(tsp)){
+	attr(x, "tour_length") <- tour_length(tsp, x)
+	names(x) <- labels(tsp)[x]
+    }
+
+    x
 }
 
 ## coercion
 as.TOUR <- function(object) UseMethod("as.TOUR")
 as.TOUR.numeric <-  function(object){
-    l <- labels(object)
+    l <- labels(object)	    ### preserve lables
     object <- as.integer(object)
     names(object) <- l
     as.TOUR(object)
@@ -40,7 +47,7 @@ as.TOUR.integer <- function(object){
 
     if(any(duplicated(object))) stop("tour indices are not unique.")
 
-    class(object) <- "TOUR"
+    class(object) <- c("TOUR", class(object))
     object
 }
 

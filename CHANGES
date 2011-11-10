@@ -1,12 +1,17 @@
 
+TSP 1.0-5 (2011-11-10)
+* Changed constructor for TOUR to allow for method and tour_length.
+* Bugfix: labels in creator ATSP() (reported by Tiffany Chen)
 
-TSP 1.0-4
+TSP 1.0-4 (2011-08-31)
 * Fixed bug with missing row/column labels in as.ATSP() (reported by Ian Deters )
 
-TSP 1.0-3
+TSP 1.0-3 (2011-05-26)
 * Service release
 
-TSP 1.0-2
+TSP 1.0-2 (2011-01-14)
 * Fixed Windows/R bug with temp files.
 * Fixed the code for SpatialLines thanks to Roger Bivand.
 
+TSP 1.0-1 (2010-07-31)
+TSP 1.0-0 (2009-05-24)

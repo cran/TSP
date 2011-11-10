@@ -76,11 +76,5 @@ solve_TSP <- function(x, method = NULL, control = NULL)
     }
 
     
-    if(!is.integer(order)) order <- as.integer(order)
-    class(order) <- c("TOUR", class(order))
-    attr(order, "method") <- methods[methodNr]
-    attr(order, "tour_length") <- tour_length(x, order)
-    names(order) <- labels(x)[order]
-    
-    return(order)
+    TOUR(order, method=methods[methodNr], tsp=x)
 }

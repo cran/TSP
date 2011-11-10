@@ -11,7 +11,7 @@
 }
 \usage{
 ## conctructor
-TOUR(x)
+TOUR(x, method=NA, tsp=NULL)
 
 ## coercion
 as.TOUR(object)
@@ -23,6 +23,10 @@ as.TOUR(object)
   \item{x}{ an integer permutation vector or, for the methods 
       an object of class \code{TOUR}}.
   \item{object}{ data (an integer vector) which can be coerced to \code{TOUR}.}.
+  \item{method}{ character string; method used to create the tour.}
+  \item{tsp}{ \code{TSP} object the tour applies to. If available then the
+  tour will include the tour length. Also the labes of the cities will be 
+  available in the tour (otherwise the labels of \code{x} are used).}
   \item{\ldots}{ further arguments are passed on.}
 }
 \details{
@@ -43,9 +47,10 @@ does not contain the distance information.
 \code{\link{image}}.
 }
 \examples{
-data("USCA50")
+TOUR(1:10)
 
 ## calculate a tour
+data("USCA50")
 tour <- solve_TSP(USCA50)
 tour
 
