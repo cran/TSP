@@ -43,13 +43,21 @@ as.ATSP.matrix <- function(object){
     if(is.null(colnames(object)))  colnames(object) <- rownames(object)
     if(is.null(rownames(object)))  rownames(object) <- colnames(object)
 
+    ## make sure data is numeric
+    mode(object) <- "numeric"
     class(object) <- c("ATSP", class(object))
+
     object
 }
 
 as.ATSP.dist <- function(object){
     method <- attr(object, "method")
     object <- as.ATSP(as.matrix(object)) 
+    
+    ## make sure data is numeric
+    mode(object) <- "numeric"
+    class(object) <- c("ATSP", class(object))
+    
     attr(object, "method") <- method
     object
 }

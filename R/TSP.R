@@ -37,6 +37,9 @@ as.TSP.dist <- function(object){
     attr(object, "Lables") <- c(1:n_of_cities(object))
 
     if(any(is.nan(object))) stop(paste(sQuote("NAs"), "not supported"))
+    
+    ## make sure data is numeric
+    mode(object) <- "numeric"
     class(object) <- c("TSP", class(object))
     object
 }
@@ -53,6 +56,9 @@ as.TSP.matrix <- function(object){
     attr(object, "Lables") <- c(1:n_of_cities(object))
 
     if(any(is.nan(object))) stop(paste(sQuote("NAs"), "not supported"))
+    
+    ## make sure data is numeric
+    mode(object) <- "numeric"
     class(object) <- c("TSP", class(object))
     object
 }

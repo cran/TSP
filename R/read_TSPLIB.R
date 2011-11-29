@@ -40,7 +40,7 @@ read_TSPLIB <- function(file, precision = 0) {
     ## check
     if(substr(info$TYPE, 1, 3) == "TSP") type <- "TSP"
     else if(substr(info$TYPE, 1, 3) == "ATS") type <- "ATSP"
-    else stop ("currently the only implemented TYPE is TSP")
+    else stop ("Currently the only implemented TYPEs are TSP and ATS(P)!")
     
     if(info$EDGE_WEIGHT_TYPE != "EXPLICIT") 
     stop ("EDGE_WEIGHT_TYPE needs to be EXPLICIT")
@@ -55,7 +55,21 @@ read_TSPLIB <- function(file, precision = 0) {
     data <- sub("EOF", "", data, ignore.case = TRUE) ## kill optional EOF
     data <- sub("^[[:space:]]*", "", data)## kill leading spaces
     data <- strsplit(paste(data, collapse = " "), "[[:space:]]+")[[1]]
-    data <- as.integer(data)
+        
+    if(info$EDGE_WEIGHT_FORMAT == "FULL_MATRIX")
+	data <- data[1:(dim^2)]
+    else if(info$EDGE_WEIGHT_FORMAT == "UPPER_ROW" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_COL" 
+	    || info$EDGE_WEIGHT_FORMAT == "UPPER_COL" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_ROW")
+	data <- data[1:(dim*(dim-1)/2)]
+    else if(info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_ROW" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_COL"
+	    || info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_COL" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_ROW") 
+	data <- data[1:(dim^2/2)]
+	
+    data <- as.numeric(data)
     
     if(precision != 0) data <- data *10^precision
 
@@ -76,15 +90,15 @@ read_TSPLIB <- function(file, precision = 0) {
     if(info$EDGE_WEIGHT_FORMAT == "FULL_MATRIX") {
         data <- as.dist(matrix(data, ncol = dim))
     
-    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_ROW" || 
-        info$EDGE_WEIGHT_FORMAT == "LOWER_COL") {
+    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_ROW" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_COL") {
         class(data) <- "dist"
         attr(data, "Size")  <- dim
         attr(data, "Diag")  <- FALSE
         attr(data, "Upper") <- FALSE
     
-    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_ROW" ||
-        info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_COL") {
+    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_ROW" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_COL") {
         ## kill diag
         kill <- cumsum(c(1, rev(2:dim)))
         data <- data[-kill]
@@ -94,15 +108,15 @@ read_TSPLIB <- function(file, precision = 0) {
         attr(data, "Diag")  <- FALSE
         attr(data, "Upper") <- FALSE
        
-    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_COL" ||
-        info$EDGE_WEIGHT_FORMAT == "LOWER_ROW") {
+    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_COL" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_ROW") {
         class(data) <- "dist"
         attr(data, "Size")  <- dim
         attr(data, "Diag")  <- FALSE
         attr(data, "Upper") <- TRUE
     
-    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_COL" ||
-        info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_ROW") {
+    }else if(info$EDGE_WEIGHT_FORMAT == "UPPER_DIAG_COL" 
+	    || info$EDGE_WEIGHT_FORMAT == "LOWER_DIAG_ROW") {
         ## kill diag
         kill <- cumsum(1:dim)
         data <- data[-kill]
@@ -112,7 +126,7 @@ read_TSPLIB <- function(file, precision = 0) {
         attr(data, "Diag")  <- FALSE
         attr(data, "Upper") <- TRUE
     
-    }else stop("EDGE_WEIGHT_FORMAT not implemented")
+    }else stop("The specified EDGE_WEIGHT_FORMAT is not implemented!")
         
    TSP(data)
 }

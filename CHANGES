@@ -1,3 +1,6 @@
+TSP 1.0-6 (2011-11-29)
+* Fixed bug in read_TSPLIB.
+
 
 TSP 1.0-5 (2011-11-10)
 * Changed constructor for TOUR to allow for method and tour_length.
