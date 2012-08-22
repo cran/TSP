@@ -84,7 +84,8 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
         ## cheapest
         else if(type_num == 3) {
             winner_index <- choose1_min(sapply(ks, FUN =
-                    function(k) min(.Call("insertion_cost", x, order, k))))
+                    function(k) min(.Call("insertion_cost", x, order, k, 
+				    PACKAGE="TSP"))))
             k <- ks[winner_index]
 
             ## we look for the optimal insertion place for k again later
@@ -103,7 +104,8 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
         
         if(length(order) == 1) order <- append(order, k)
         else {
-            pos <- choose1_min(.Call("insertion_cost", x, order, k))
+            pos <- choose1_min(.Call("insertion_cost", x, order, k, 
+			    PACKAGE="TSP"))
             order <- append(order, k, after = pos)
         }
     }

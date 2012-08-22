@@ -1,6 +1,9 @@
+
+TSP 1.0-7 (2012-08-21)
+* Added PACKAGE argument to C calls.
+
 TSP 1.0-6 (2011-11-29)
 * Fixed bug in read_TSPLIB.
-
 
 TSP 1.0-5 (2011-11-10)
 * Changed constructor for TOUR to allow for method and tour_length.

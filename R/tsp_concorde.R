@@ -125,7 +125,7 @@ tsp_concorde <- function(x, control = NULL){
     
     order <- scan(tmp_file_out, what = integer(0), quiet = TRUE)
     ## remove number of nodes and add one (result starts with 0)
-    order <- order[-1] + as.integer(1) 
+    order <- order[-1] + 1L 
 
     ## tidy up
     unlink(c(tmp_file_in, tmp_file_out))
