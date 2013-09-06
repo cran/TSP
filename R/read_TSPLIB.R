@@ -43,7 +43,7 @@ read_TSPLIB <- function(file, precision = 0) {
     else stop ("Currently the only implemented TYPEs are TSP and ATS(P)!")
     
     if(info$EDGE_WEIGHT_TYPE != "EXPLICIT") 
-    stop ("EDGE_WEIGHT_TYPE needs to be EXPLICIT")
+    stop ("Currently only EDGE_WEIGHT_TYPE EXPLICIT is implemented!")
     
     ## get data
     dim <- as.integer(info$DIMENSION)

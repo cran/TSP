@@ -36,6 +36,8 @@ in \code{x} are multiplied by \eqn{10^{precision}} before coercion to
 \code{integer}. Note that therefore all results produced by programs using the
 TSPLIB file as input need to be divided by \eqn{10^{precision}} (i.e., the
 decimal point has to be shifted \code{precision} placed to the left).
+
+Currently only \code{EDGE\_WEIGHT\_TYPE} \code{EXPLICIT} is implemented!
 }
 \value{
 \code{read_TSPLIB} returns an object of class \code{TSP} or \code{ATSP}.
