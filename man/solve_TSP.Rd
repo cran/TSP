@@ -199,9 +199,7 @@ Computing, 6(3):563--581.}
 }
 \examples{
 data("USCA50")
-
-## create TSP
-tsp <- USCA50
+USCA50
 
 ## methods
 methods <- c("nearest_insertion", "cheapest_insertion", "farthest_insertion", 
@@ -209,13 +207,13 @@ methods <- c("nearest_insertion", "cheapest_insertion", "farthest_insertion",
 
 
 ## calculate tours
-tours <- lapply(methods, FUN = function(m) solve_TSP(tsp, method = m))
+tours <- lapply(methods, FUN = function(m) solve_TSP(USCA50, method = m))
 names(tours) <- methods
 
 ## use the external solver which has to be installed separately
 \dontrun{
-tours$concorde  <- solve_TSP(tsp, method = "concorde")
-tours$linkern  <- solve_TSP(tsp, method = "linkern")
+tours$concorde  <- solve_TSP(USCA50, method = "concorde")
+tours$linkern  <- solve_TSP(USCA50, method = "linkern")
 }
 
 ## show first tour

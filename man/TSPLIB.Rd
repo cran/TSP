@@ -25,7 +25,7 @@ read_TSPLIB(file, precision = 0)
       the maximum value in \code{x} (ignoring the infinity entries) is used.}
   \item{neg_inf}{ replacement value for \code{-Inf}. 
       If no value is specified, the default value of
-      2 times the smalles neg. number is used. 
+      2 times the smallest neg. number is used. 
       If \code{x} only contains positive
       values, -1 is used.}
 }

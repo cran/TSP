@@ -35,7 +35,7 @@
 \Shorttitle{Infrastructure for the TSP} %% a short title (if necessary)
 
 %% an abstract and keywords
-\Abstract{ The traveling salesperson (or, salesman) problem (TSP) is a
+\Abstract{ The traveling salesperson problem (also known as traveling salesman problem or TSP) is a
 well known and important combinatorial optimization problem.  The goal
 is to find the shortest tour that visits each city in a given list
 exactly once and then returns to the starting city.  Despite this
@@ -79,7 +79,7 @@ one of the best exact TSP solvers currently available.  }
 \begin{document}
 
 <<echo=FALSE>>=
-options(width = 75)
+options(width = 75, useFancyQuotes=FALSE, prompt="R> ")
 ### for sampling
 set.seed(1234)
 @
@@ -669,19 +669,12 @@ methods <- c("nearest_insertion", "farthest_insertion", "cheapest_insertion",
 
 tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
                 simplify = FALSE)         
-## names(tours) <- methods
 ## tours$concorde  <- solve_TSP(tsp, method = "concorde")
-## tours$concorde  <- solve_TSP(tsp, method = "linkern")
 
 tours[[1]]
 
-
-## opt <- 14497
 dotchart(c(sapply(tours, FUN = attr, "tour_length"), optimal = 14497), 
 xlab = "tour length", xlim = c(0, 20000))
-## add optimum
-#abline(v = opt, col = "red")
-#mtext("optimum", at = opt, side = 3, col = "red")
 @
 
 \begin{figure}
@@ -723,7 +716,6 @@ this TSP.
 
 <<>>=
 tour <- solve_TSP(tsp, method="farthest_insertion")
-#tour <- solve_TSP(tsp, method ="concorde")
 tour
 @
 
@@ -853,7 +845,6 @@ the optimal solution with a length of $36091$.
 
 
 <<eval=FALSE>>=
-#tour <- solve_TSP(tsp, method = "linkern")
 tour <- solve_TSP(tsp, method = "concorde")
 tour <- as.TOUR(tour[tour <= n_of_cities(atsp)])
 @
@@ -955,7 +946,6 @@ set.seed(4444)
 <<>>=
 data("iris")
 tsp <- TSP(dist(iris[-5]), labels = iris[, "Species"])
-#tsp <- TSP(dist(scale(iris[-5])))
 tsp_dummy <- insert_dummy(tsp, n = 3, label = "boundary")
 tour <- solve_TSP(tsp_dummy)
 @
@@ -996,16 +986,10 @@ separating groups.  The result can be summarized based on the run length
 encoding of the obtained tour labels:
 
 <<>>=
-## labels(tour)
-#as.vector(abbreviate(labels(tour), dot = TRUE))
 out <- rle(labels(tour))
 data.frame(Species = out$values, 
            Lenghts = out$lengths, 
            Pos = cumsum(out$lengths))
-
-## do Concorde
-# tour <- solve_TSP(tsp_dummy, method = "concorde")
-# labels(tour)
 @
 
 

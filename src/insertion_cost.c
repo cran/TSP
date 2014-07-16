@@ -21,6 +21,7 @@ SEXP insertion_cost(SEXP R_matrix, SEXP R_order, SEXP R_k) {
 
     if (length == 1) {
         REAL(R_cost)[0] = REAL(R_matrix)[M_POS(n, order[0]-1, k)];
+    
     }else{
         for (int i = 0; i < (length-1); i++) {
             
@@ -28,6 +29,8 @@ SEXP insertion_cost(SEXP R_matrix, SEXP R_order, SEXP R_k) {
             link_add2 = REAL(R_matrix)[M_POS(n, k, order[i+1]-1)];
             link_remove = REAL(R_matrix)[M_POS(n, order[i]-1, order[i+1]-1)];
 
+            //Rprintf("Links: %f %f %f\n", link_add1, link_add2, link_remove);
+        
             // check for infinity
             if(link_add1 == R_NegInf 
                     || link_add2 == R_NegInf
