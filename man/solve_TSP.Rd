@@ -172,6 +172,7 @@ An object of class \code{TOUR}.
 \code{\link{write_TSPLIB}},
 \code{\link{Concorde}}.
 }
+\author{Michael Hahsler}
 \references{
 Concorde home page, \url{http://www.tsp.gatech.edu/concorde/}
 

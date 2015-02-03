@@ -46,6 +46,7 @@ does not contain the distance information.
 \code{\link{tour_length}},
 \code{\link{image}}.
 }
+\author{Michael Hahsler}
 \examples{
 TOUR(1:10)
 

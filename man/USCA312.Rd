@@ -35,6 +35,7 @@ We want to thank Roger Bivand for his help with plotting the map.
 John Burkardt, CITIES -- City Distance Datasets, 
 \url{http://www.csit.fsu.edu/~burkardt/datasets/cities/cities.html} 
 }
+\author{Michael Hahsler}
 \examples{
 data("USCA312")
 data("USCA312_map")

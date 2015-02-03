@@ -54,6 +54,7 @@ Objects of class \code{TSP} are internally represented as \code{dist} objects
 \code{\link{tour_length}},
 \code{\link{solve_TSP}}.
 }
+\author{Michael Hahsler}
 \examples{
 data("iris")
 d <- dist(iris[-5])

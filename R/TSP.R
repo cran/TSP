@@ -90,5 +90,6 @@ image.TSP <- function(x, order, col = gray.colors(64), ...) {
     p <- n_of_cities(x)
     if(missing(order)) order <- 1:p
     
-    image.default(1:p, 1:p, as.matrix(x)[order, order], col = col, ...)
+    graphics::image.default(1:p, 1:p, as.matrix(x)[order, order], 
+			    col = col, ...)
 }

@@ -45,6 +45,7 @@ traveling salesman problems, \emph{Operations Research Letters, 2, 161--163.}
 \code{\link{ATSP}},
 \code{\link{TSP}}.
 }
+\author{Michael Hahsler}
 \examples{
 data("USCA50")
 

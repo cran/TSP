@@ -56,6 +56,7 @@ Objects of class \code{ATSP} are internally represented by a matrix
 \code{\link{tour_length}},
 \code{\link{solve_TSP}}.
 }
+\author{Michael Hahsler}
 \examples{
 data <- matrix(runif(10^2), ncol = 10, dimnames = list(1:10, 1:10))
 

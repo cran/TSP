@@ -34,6 +34,7 @@ insert_dummy(x, n = 1, const = 0, inf = Inf, label =  "dummy")
 \code{\link{TSP}},
 \code{\link{ATSP}}
 }
+\author{Michael Hahsler}
 \references{
 Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
 Remedies, and Applications, \emph{Journal of Machine Learning Research}

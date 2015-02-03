@@ -210,19 +210,21 @@ linkern_help <- function(exe = NULL) {
 concorde_path <- local({
     .path <- NULL
     function(path){
-        if(missing(path)) .path else {
-            .path <<- path
-            if(!is.null(path)) {
-                ex <- c(list.files(path, pattern = "concorde"),
-                    list.files(path, pattern = "linkern"))
-                if(length(ex) < 1)
-                warning(paste("no executable (concorde, linkern) found in", 
-                        path))
-                cat("found:", ex, "\n")
-            }
-            invisible(.path)
+	if(missing(path)) .path else {
+	    .path <<- path
+	    if(!is.null(path)) {
+		ex <- c(list.files(path, pattern = "concorde", 
+				   ignore.case = TRUE),
+			list.files(path, pattern = "linkern", 
+				   ignore.case = TRUE))
+		if(length(ex) < 1)
+		    warning(paste("no executable (concorde, linkern) found in", 
+				  path))
+		cat("found:", ex, "\n")
+	    }
+	    invisible(.path)
 
-        }
+	}
     }
 })
 

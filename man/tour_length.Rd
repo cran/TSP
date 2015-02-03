@@ -25,6 +25,7 @@ returns \code{NA}.
 \code{\link{ATSP}},
 \code{\link{TOUR}}.
 }
+\author{Michael Hahsler}
 \examples{
 data("USCA50")
 

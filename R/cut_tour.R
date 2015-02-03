@@ -22,6 +22,7 @@ cut_tour.TOUR <- function(x, cut, exclude_cut = TRUE) {
    
     if(is.character(cut)) cut <- which(labels(x) == cut)
     else cut <- which(x == cut) ## city id
+    if(length(cut)!=1) stop("cut has to exist in the tour!")
 
     exclude_cut <- if(exclude_cut) 1 else 0
     

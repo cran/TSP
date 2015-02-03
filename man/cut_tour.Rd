@@ -17,6 +17,7 @@ cut_tour(x, cut, exclude_cut = TRUE)
 \seealso{
 \code{\link{TOUR}}.
 }
+\author{Michael Hahsler}
 \examples{
 data("USCA50")
 

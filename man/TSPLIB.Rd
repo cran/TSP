@@ -37,11 +37,12 @@ in \code{x} are multiplied by \eqn{10^{precision}} before coercion to
 TSPLIB file as input need to be divided by \eqn{10^{precision}} (i.e., the
 decimal point has to be shifted \code{precision} placed to the left).
 
-Currently only \code{EDGE\_WEIGHT\_TYPE} \code{EXPLICIT} is implemented!
+Currently only \code{EDGE_WEIGHT_TYPE} \code{EXPLICIT} is implemented!
 }
 \value{
 \code{read_TSPLIB} returns an object of class \code{TSP} or \code{ATSP}.
 }
+\author{Michael Hahsler}
 \references{TSPLIB home page, 
 \url{http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/}}
 \keyword{file}% at least one, from doc/KEYWORDS

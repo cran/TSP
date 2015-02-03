@@ -1,3 +1,8 @@
+Changes in version 1.0-10 (2/3/2015)
+    * added check for argument cut in cut_tour
+    * Finging concord and linkern is now not case 
+	sensitive (Reported by Mark Otto)
+
 Changes in version 1.0-9 (7/16/2014)
     * Check for NAs in distances.
     * +INF and -INF are now handled in solve_TSP.

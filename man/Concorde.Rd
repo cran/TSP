@@ -1,5 +1,6 @@
 \name{Concorde}
 \alias{Concorde}
+\alias{concorde}
 \alias{concorde_path}
 \alias{concorde_help}
 \alias{linkern_help}
@@ -28,7 +29,7 @@ linkern_help(exe = NULL)
   \item{exe}{ an optional character string containing the whole path to the
       executable (including the executable's name). 
       
-      Other options are (1) to use \code{concorde\_path()} to set the path to
+      Other options are (1) to use \code{concorde_path()} to set the path to
       the directory  containing the executables for concorde and linkern, or
       (2) to put the executables somewhere in the search path.
       }
@@ -38,19 +39,20 @@ linkern_help(exe = NULL)
 The code of the Concorde TSP package is not included in this package and has to
 be obtained separately from the Concorde web site (see references).  Either
 download the precompiled executables and place them in a suitable directory
-(either in the search path, or you have to use \code{concorde\_path()}) and
+(either in the search path, or you have to use \code{concorde_path()}) and
 make them executable, or you can get the source code and compile it on your
 own.
 
 To get a list of all available command line options which can be used via the
-\code{clo} option for \code{solve_TSP} use \code{concorde\_help()} and
-\code{linkern\_help()}.  Several options (\option{-x}, \option{-o},
+\code{clo} option for \code{solve_TSP} use \code{concorde_help()} and
+\code{linkern_help()}.  Several options (\option{-x}, \option{-o},
 \option{-N},  \option{-Q}) are not available via \code{solve_TSP} since they
 are used by the interface.  
 }
 \seealso{
 \code{\link{solve_TSP}}
 }
+\author{Michael Hahsler}
 \references{
 Concorde home page,
 \url{http://www.tsp.gatech.edu/concorde/}
