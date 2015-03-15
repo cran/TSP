@@ -58,6 +58,9 @@ tour
 ## get permutation vector
 as.integer(tour)
 
+## get tour length directly from tour
+attr(tour, "tour_length")
+  
 ## show labels
 labels(tour)
 }

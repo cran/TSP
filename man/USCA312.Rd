@@ -32,8 +32,8 @@ Examples section).
 We want to thank Roger Bivand for his help with plotting the map.
 }
 \source{
-John Burkardt, CITIES -- City Distance Datasets, 
-\url{http://www.csit.fsu.edu/~burkardt/datasets/cities/cities.html} 
+John Burkardt, CITIES -- City Distance Datasets, Florida State University, 
+Department of Scientific Computing
 }
 \author{Michael Hahsler}
 \examples{

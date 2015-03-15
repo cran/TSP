@@ -10,7 +10,7 @@
  * R_matrix ... matrix with distances
  * R_t .. tour
  *
- * neg inf is nt handled correctly!
+ * inf and NA is not allowed!
  *
  */
 
@@ -51,12 +51,15 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
                 e2_swap = REAL(R_matrix)
                     [M_POS(n, INTEGER(R_t)[i+1]-1, INTEGER(R_t)[j+1]-1)];
                 
-                // handle pos inf
+                
+                /* // handle pos inf
                 if (e1_swap == R_PosInf || e2_swap == R_PosInf) 
                     cur_imp = 0;
                 else if (e1 == R_PosInf || e2 == R_PosInf) 
                     cur_imp = R_PosInf;
-                else cur_imp = (e1+e2) - (e1_swap+e2_swap);
+                else */
+                
+                cur_imp = (e1+e2) - (e1_swap+e2_swap);
 
                 if(cur_imp > 0) {
                     swaps++;

@@ -26,7 +26,7 @@ set.seed(1234)
 ### code chunk number 4: dotchart_USCA50
 ###################################################
 methods <- c("nearest_insertion", "farthest_insertion", "cheapest_insertion",
-    "arbitrary_insertion", "nn", "repetitive_nn", "2-opt")
+    "arbitrary_insertion", "nn", "repetitive_nn", "two_opt")
 
 tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
                 simplify = FALSE)         
@@ -34,7 +34,7 @@ tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
 
 tours[[1]]
 
-dotchart(c(sapply(tours, FUN = attr, "tour_length"), optimal = 14497), 
+dotchart(sort(c(sapply(tours, tour_length), optimal = 14497)), 
 xlab = "tour length", xlim = c(0, 20000))
 
 
@@ -106,7 +106,7 @@ ny <- which(labels(USCA312) == "New York, NY")
 atsp[, ny] <- 0
 initial_tour <- solve_TSP(atsp, method="nn")
 initial_tour
-tour <- solve_TSP(atsp, method ="2-opt", control = list(tour = initial_tour))
+tour <- solve_TSP(atsp, method ="two_opt", control = list(tour = initial_tour))
 tour
 path <- cut_tour(tour, ny, exclude_cut = FALSE)
 

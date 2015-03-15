@@ -20,7 +20,7 @@
 ATSP(x, labels = NULL)
 
 ## coercion
-as.ATSP(object)
+as.ATSP(x)
 
 ## methods
 \method{n_of_cities}{ATSP}(x)
@@ -68,10 +68,10 @@ n_of_cities(atsp)
 labels(atsp)
 
 ## calculate a tour
-tour <- solve_TSP(atsp)
-
-tour_length(atsp)
-tour_length(atsp, tour)
+tour <- solve_TSP(atsp, method = "nn")
+tour
+  
+tour_length(tour)
 
 image(atsp, tour)
 }

@@ -596,7 +596,7 @@ The available algorithms are shown in Table~\ref{tab:methods}.
     Cheapest insertion & \code{"cheapest\_insertion"} & TSP/ATSP  \\
     Arbitrary insertion & \code{"arbitrary\_insertion"} & TSP/ATSP  \\
     Concorde TSP solver & \code{"concorde"} & TSP  \\
-    2-Opt improvement heuristic &  \code{"2-opt"}  & TSP/ATSP \\
+    2-Opt improvement heuristic &  \code{"two\_opt"}  & TSP/ATSP \\
     Chained Lin-Kernighan &  \code{"linkern"}  & TSP \\
 \hline
 \end{tabular}
@@ -665,7 +665,7 @@ set.seed(1234)
 
 <<fig=TRUE, include=FALSE, label=dotchart_USCA50, width=7, height=4>>=
 methods <- c("nearest_insertion", "farthest_insertion", "cheapest_insertion",
-    "arbitrary_insertion", "nn", "repetitive_nn", "2-opt")
+    "arbitrary_insertion", "nn", "repetitive_nn", "two_opt")
 
 tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
                 simplify = FALSE)         
@@ -673,7 +673,7 @@ tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
 
 tours[[1]]
 
-dotchart(c(sapply(tours, FUN = attr, "tour_length"), optimal = 14497), 
+dotchart(sort(c(sapply(tours, tour_length), optimal = 14497)), 
 xlab = "tour length", xlim = c(0, 20000))
 @
 
@@ -801,7 +801,7 @@ ny <- which(labels(USCA312) == "New York, NY")
 atsp[, ny] <- 0
 initial_tour <- solve_TSP(atsp, method="nn")
 initial_tour
-tour <- solve_TSP(atsp, method ="2-opt", control = list(tour = initial_tour))
+tour <- solve_TSP(atsp, method ="two_opt", control = list(tour = initial_tour))
 tour
 path <- cut_tour(tour, ny, exclude_cut = FALSE)
 

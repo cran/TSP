@@ -64,8 +64,5 @@ image(tsp_dummy, tour)
 ## draw lines where the dummy cities are located
 abline(h = which(labels(tour)=="boundary"), col = "red")
 abline(v = which(labels(tour)=="boundary"), col = "red")
-
-## print the results (NAs are the dummy cities)
-iris[tour, "Species"]
 }
 \keyword{manip}

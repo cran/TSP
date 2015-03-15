@@ -19,9 +19,12 @@
 
 
 ## insert a dummy city
+##generic
+insert_dummy <- function(x, n = 1, const = 0, inf = Inf, label = "dummy") 
+  UseMethod("insert_dummy")
+
 
 ## TODO: if n > 1 the distances between the cities have to be inf...
-
 insert_dummy.TSP.old <- function(x, n = 1, const = 0, inf = Inf, 
     label = "dummy") {
     
@@ -67,9 +70,9 @@ insert_dummy.ATSP <- function(x, n = 1, const = 0, inf = Inf, label = "dummy") {
     if(length(label) == 1 && n > 1) label = rep(label, n)
     
     ## add dummy rows/columns
-    x <- cbind(x, matrix(0, ncol = n, nrow = p, 
+    x <- cbind(x, matrix(const, ncol = n, nrow = p, 
             dimnames = list(NULL, label)))
-    x <- rbind(x, matrix(0, ncol = p+n, nrow = n, 
+    x <- rbind(x, matrix(const, ncol = p+n, nrow = n, 
             dimnames = list(label, NULL)))
 
     ## place inf between dummies
@@ -82,7 +85,5 @@ insert_dummy.ATSP <- function(x, n = 1, const = 0, inf = Inf, label = "dummy") {
     ATSP(x)
 }
 
-##generic
-insert_dummy <- function(x, n = 1, const = 0, inf = Inf, label = "dummy") 
-    UseMethod("insert_dummy")
-
+insert_dummy.ETSP <- function(x, n = 1, const = 0, inf = Inf, label = "dummy") 
+  stop("Dummy cities cannot be used with ETSP!")

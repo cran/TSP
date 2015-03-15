@@ -1,7 +1,18 @@
+Changes in version 1.1-0 (3/14/2015)
+    * default method is now arbitrary_insertion with two_opt refinement.
+    * we use foreach (use doParallel) to compute repetitions in parallel
+    * ETSP (Euclidean TSP) added.
+    * generic and arguments for tour_lengh have changed (fist argument is now a 
+        tour).
+    * method "2-opt" was renamed to "two_opt" so it can also be used as a 
+        proper variable name.
+    * solve_TSP gained methods "identity" and "random".
+    * solve_TSP gained options "repetition" and "two_opt".
+
 Changes in version 1.0-10 (2/3/2015)
     * added check for argument cut in cut_tour
-    * Finging concord and linkern is now not case 
-	sensitive (Reported by Mark Otto)
+    * Finding concord and linkern is now case 
+        insensitive (Reported by Mark Otto)
 
 Changes in version 1.0-9 (7/16/2014)
     * Check for NAs in distances.

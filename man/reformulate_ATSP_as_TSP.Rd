@@ -61,9 +61,13 @@ labels(tsp)
 ## create tour (now you could use Concorde or LK)
 tour_atsp <- solve_TSP(tsp, method="nn")
 head(labels(tour_atsp), n = 10)
+tour_atsp
+## Note that the tour has a lenght of -Inf since the reformulation created
+## some -Inf distances
 
-## filter out the dummy cities
-tour <- TOUR(tour_atsp[tour_atsp <= n_of_cities(atsp)])
-tour_length(atsp, tour)
+## filter out the dummy cities (we specify tsp so the tour lenght is 
+## recalculated)
+tour <- TOUR(tour_atsp[tour_atsp <= n_of_cities(atsp)], tsp = atsp)
+tour
 }
 \keyword{optimize}

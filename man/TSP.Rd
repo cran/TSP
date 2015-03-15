@@ -18,7 +18,7 @@
 TSP(x, labels = NULL)
 
 ## coercion
-as.TSP(object)
+as.TSP(x)
 
 ## methods
 \method{n_of_cities}{TSP}(x)

@@ -25,7 +25,7 @@ tsp_two_opt <- function(x, control = NULL){
     ## improve a given tour or create a random tour
     initial <- function() {
         if(!is.null(control$tour)) as.integer(control$tour) 
-        else sample(1:n_of_cities(x))
+        else sample(n_of_cities(x))
     }
 
     ## best of several tries

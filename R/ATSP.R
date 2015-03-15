@@ -28,38 +28,38 @@ ATSP <- function(x, labels = NULL) {
     atsp
 }
 
-as.ATSP <- function(object) UseMethod("as.ATSP")
-as.ATSP.matrix <- function(object){
+as.ATSP <- function(x) UseMethod("as.ATSP")
+as.ATSP.matrix <- function(x){
     .isSquare <- function(x) (dim(x)[1] == dim(x)[2])
 
-    if(!.isSquare(object)) stop("ATSP requires a square matrix")
+    if(!.isSquare(x)) stop("ATSP requires a square matrix")
 
     ## check for NAs
-    if(any(is.nan(object))) stop(paste(sQuote("NAs"), "not supported"))
+    if(any(is.nan(x))) stop(paste(sQuote("NAs"), "not supported"))
     
     ## make sure we have labels
-    if(is.null(dimnames(object))) 
-        dimnames(object) <- list(1:dim(object)[1], 1: dim(object)[1])
-    if(is.null(colnames(object)))  colnames(object) <- rownames(object)
-    if(is.null(rownames(object)))  rownames(object) <- colnames(object)
+    if(is.null(dimnames(x))) 
+        dimnames(x) <- list(1:dim(x)[1], 1: dim(x)[1])
+    if(is.null(colnames(x)))  colnames(x) <- rownames(x)
+    if(is.null(rownames(x)))  rownames(x) <- colnames(x)
 
     ## make sure data is numeric
-    mode(object) <- "numeric"
-    class(object) <- c("ATSP", class(object))
+    mode(x) <- "numeric"
+    class(x) <- c("ATSP", class(x))
 
-    object
+    x
 }
 
-as.ATSP.dist <- function(object){
-    method <- attr(object, "method")
-    object <- as.ATSP(as.matrix(object)) 
+as.ATSP.dist <- function(x){
+    method <- attr(x, "method")
+    x <- as.ATSP(as.matrix(x)) 
     
     ## make sure data is numeric
-    mode(object) <- "numeric"
-    class(object) <- c("ATSP", class(object))
+    mode(x) <- "numeric"
+    class(x) <- c("ATSP", class(x))
     
-    attr(object, "method") <- method
-    object
+    attr(x, "method") <- method
+    x
 }
 
 

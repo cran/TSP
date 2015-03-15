@@ -27,42 +27,46 @@ TSP <- function(x, labels = NULL) {
 }
 
 ## coercion
-as.TSP <- function(object) UseMethod("as.TSP")
-as.TSP.dist <- function(object){
+as.TSP <- function(x) UseMethod("as.TSP")
+as.TSP.dist <- function(x){
     ## make sure we have a upper triangle matrix w/o diagonal
-    object <- as.dist(object, diag = FALSE, upper = FALSE)
+    x <- as.dist(x, diag = FALSE, upper = FALSE)
     
     ## make sure we have labels
-    if(is.null(attr(object, "Lables"))) 
-    attr(object, "Lables") <- c(1:n_of_cities(object))
+    if(is.null(attr(x, "Lables"))) attr(x, "Lables") <- c(1:n_of_cities(x))
 
-    if(any(is.nan(object))) stop(paste(sQuote("NAs"), "not supported"))
+    if(any(is.nan(x))) stop(paste(sQuote("NAs"), "not supported"))
     
     ## make sure data is numeric
-    mode(object) <- "numeric"
-    class(object) <- c("TSP", class(object))
-    object
+    mode(x) <- "numeric"
+    class(x) <- c("TSP", class(x))
+    x
 }
 
-as.TSP.matrix <- function(object){
-    if(!isSymmetric(object)) stop("TSP requires a symmetric matrix")
+as.TSP.matrix <- function(x){
+    if(!isSymmetric(x)) stop("TSP requires a symmetric matrix")
 
-    method <- attr(object, "method")
-    object <- as.dist(object, diag = FALSE, upper = FALSE)
-    attr(object, "method") <- method
+    method <- attr(x, "method")
+    x <- as.dist(x, diag = FALSE, upper = FALSE)
+    attr(x, "method") <- method
     
     ## make sure we have labels
-    if(is.null(attr(object, "Lables"))) 
-    attr(object, "Lables") <- c(1:n_of_cities(object))
+    if(is.null(attr(x, "Lables"))) 
+    attr(x, "Lables") <- c(1:n_of_cities(x))
 
-    if(any(is.nan(object))) stop(paste(sQuote("NAs"), "not supported"))
+    if(any(is.nan(x))) stop(paste(sQuote("NAs"), "not supported"))
     
     ## make sure data is numeric
-    mode(object) <- "numeric"
-    class(object) <- c("TSP", class(object))
-    object
+    mode(x) <- "numeric"
+    class(x) <- c("TSP", class(x))
+    x
 }
 
+as.dist.TSP <- function(m, ...) {
+  class(m) <- "dist"
+  m
+}
+  
 
 ## print
 print.TSP <- function(x, ...) {
