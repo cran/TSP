@@ -22,34 +22,35 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
     double e1, e2, e1_swap, e2_swap;
     double imp, cur_imp;
     int tmp;
+    double *matrix = REAL(R_matrix);
+    int *t = INTEGER(R_t);
 
+    
     // check   
     n = INTEGER(GET_DIM(R_matrix))[0];
     if (LENGTH(R_t) != n)
         error("tour has invalid length");
 
     for (i = 0; i < n; i++)
-        if (INTEGER(R_t)[i] < 1 || INTEGER(R_t)[i] > n)
+        if (t[i] < 1 || t[i] > n)
             error("tour contains invalid values");
 
-    // main loop
+    // make a copy
     PROTECT(R_t = duplicate(R_t));
+    t = INTEGER(R_t);
+
+    // main loop
     do{
         swaps = 0;
         imp = 0.0;
 
         for (i = 0; i < (n-2); i++){
-            e1 = REAL(R_matrix)
-                [M_POS(n, INTEGER(R_t)[i]-1, INTEGER(R_t)[i+1]-1)]; 
+            e1 = matrix[M_POS(n, t[i]-1, t[i+1]-1)]; 
 
             for (j = (i+1); j < (n-1); j++){
-                e2 = REAL(R_matrix)
-                    [M_POS(n, INTEGER(R_t)[j]-1, INTEGER(R_t)[j+1]-1)];
-
-                e1_swap = REAL(R_matrix)
-                    [M_POS(n, INTEGER(R_t)[i]-1, INTEGER(R_t)[j]-1)];
-                e2_swap = REAL(R_matrix)
-                    [M_POS(n, INTEGER(R_t)[i+1]-1, INTEGER(R_t)[j+1]-1)];
+                e2 = matrix[M_POS(n, t[j]-1, t[j+1]-1)];
+                e1_swap = matrix[M_POS(n, t[i]-1, t[j]-1)];
+                e2_swap = matrix[M_POS(n, t[i+1]-1, t[j+1]-1)];
                 
                 
                 /* // handle pos inf
@@ -71,13 +72,9 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
             }
         
             // swap including last city 
-            e2 = REAL(R_matrix)
-                [M_POS(n, INTEGER(R_t)[n-1]-1, INTEGER(R_t)[0]-1)];
-
-            e1_swap = REAL(R_matrix)
-                [M_POS(n, INTEGER(R_t)[i]-1, INTEGER(R_t)[n-1]-1)];
-            e2_swap = REAL(R_matrix)
-                [M_POS(n, INTEGER(R_t)[i+1]-1, INTEGER(R_t)[0]-1)];
+            e2 = matrix[M_POS(n, t[n-1]-1, t[0]-1)];
+            e1_swap = matrix[M_POS(n, t[i]-1, t[n-1]-1)];
+            e2_swap = matrix[M_POS(n, t[i+1]-1, t[0]-1)];
 
             cur_imp = (e1+e2) - (e1_swap+e2_swap);
 
@@ -97,9 +94,9 @@ SEXP two_opt(SEXP R_matrix, SEXP R_t) {
         // invert
         if(swaps > 0){
             for(i = 0; i < (swap2-swap1+1)/2; i++) { // +1 for even length
-                tmp = INTEGER(R_t)[swap1+i];
-                INTEGER(R_t)[swap1+i] = INTEGER(R_t)[swap2-i];
-                INTEGER(R_t)[swap2-i] = tmp;
+                tmp = t[swap1+i];
+                t[swap1+i] = t[swap2-i];
+                t[swap2-i] = tmp;
             }
         }
 

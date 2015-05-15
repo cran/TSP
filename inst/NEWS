@@ -1,3 +1,7 @@
+Changes in version 1.1-1 (5/15/2015)
+    * improved speed of C code.
+    * compatibility with new release of testthat
+
 Changes in version 1.1-0 (3/14/2015)
     * default method is now arbitrary_insertion with two_opt refinement.
     * we use foreach (use doParallel) to compute repetitions in parallel
