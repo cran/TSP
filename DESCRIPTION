@@ -1,8 +1,8 @@
 Package: TSP
 Type: Package
 Title: Traveling Salesperson Problem (TSP)
-Version: 1.1-1
-Date: 2015-05-15
+Version: 1.1-2
+Date: 2015-7-30
 Authors@R: c(
 	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
 	    email = "mhahsler@lyle.smu.edu"),
@@ -18,14 +18,14 @@ Classification/ACM: G.1.6, G.2.1, G.4
 URL: http://lyle.smu.edu/IDA/seriation
 BugReports: http://r-forge.r-project.org/projects/tsp/
 Depends: R (>= 2.14.0)
-Imports: graphics, foreach
+Imports: graphics, foreach, utils, methods, stats, grDevices
 Suggests: maps, sp, maptools, testthat
 License: GPL-3
 Copyright: All code is Copyright (C) Michael Hahsler and Kurt Hornik.
 NeedsCompilation: yes
-Packaged: 2015-05-15 19:29:44 UTC; hahsler
+Packaged: 2015-06-30 20:57:27 UTC; hahsler
 Author: Michael Hahsler [aut, cre, cph],
   Kurt Hornik [aut, cph]
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2015-05-15 22:11:18
+Date/Publication: 2015-07-01 01:39:53

@@ -1,8 +1,10 @@
 useDynLib(TSP)
 
-importFrom(stats, as.dist)
+importFrom(stats, as.dist, dist)
+importFrom(utils, read.table, write.table)
+importFrom(methods, is)
 importFrom(grDevices, gray.colors)
-importFrom(graphics, image.default)
+importFrom(graphics, image.default, plot, polygon)
 importFrom(foreach, foreach, "%dopar%")
 
 export(TSP, 
