@@ -1,3 +1,7 @@
+Changes in version 1.1-3 (9/2/2015)
+    * two-opt now works correctly with asymetric TSPs 
+      (bug report by Luis Martinez).
+
 Changes in version 1.1-2 (7/30/2015)
     * Fixed imports for non-base packages.
 
@@ -9,8 +13,8 @@ Changes in version 1.1-0 (3/14/2015)
     * default method is now arbitrary_insertion with two_opt refinement.
     * we use foreach (use doParallel) to compute repetitions in parallel
     * ETSP (Euclidean TSP) added.
-    * generic and arguments for tour_lengh have changed (fist argument is now a 
-        tour).
+    * generic and arguments for tour_lengh have changed 
+      (fist argument is now a tour).
     * method "2-opt" was renamed to "two_opt" so it can also be used as a 
         proper variable name.
     * solve_TSP gained methods "identity" and "random".

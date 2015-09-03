@@ -1,8 +1,8 @@
 Package: TSP
 Type: Package
 Title: Traveling Salesperson Problem (TSP)
-Version: 1.1-2
-Date: 2015-7-30
+Version: 1.1-3
+Date: 2015-9-2
 Authors@R: c(
 	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
 	    email = "mhahsler@lyle.smu.edu"),
@@ -23,9 +23,9 @@ Suggests: maps, sp, maptools, testthat
 License: GPL-3
 Copyright: All code is Copyright (C) Michael Hahsler and Kurt Hornik.
 NeedsCompilation: yes
-Packaged: 2015-06-30 20:57:27 UTC; hahsler
+Packaged: 2015-09-02 22:30:16 UTC; hahsler
 Author: Michael Hahsler [aut, cre, cph],
   Kurt Hornik [aut, cph]
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2015-07-01 01:39:53
+Date/Publication: 2015-09-03 09:04:31
