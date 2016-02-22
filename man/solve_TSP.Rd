@@ -16,7 +16,7 @@ solve_TSP(x, method = NULL, control = NULL, ...)
     algorithm with two_opt refinement. }
   \item{control}{ a list of arguments passed on to the TSP solver
     selected by \code{method}.}
-  \item{...}{ additional arguments are added to control \code{control}.}
+  \item{...}{ additional arguments are added to \code{control}.}
 }
 \details{
 Treatment of \code{NA}s and infinite values in \code{x}: 

@@ -42,6 +42,9 @@ as.ATSP(x)
 \details{
 Objects of class \code{ATSP} are internally represented by a matrix 
 (use \code{as.matrix()} to get just the matrix).
+
+ATSPs can be transformed into (larger) symmetric TSPs using 
+\code{reformulate_ATSP_as_TSP()}.
 }
 \value{
 \code{ATSP()} returns \code{x} as an object of class \code{ATSP}.
@@ -54,6 +57,7 @@ Objects of class \code{ATSP} are internally represented by a matrix
 \code{\link{TOUR}},
 \code{\link{insert_dummy}},
 \code{\link{tour_length}},
+\code{\link{reformulate_ATSP_as_TSP}},
 \code{\link{solve_TSP}}.
 }
 \author{Michael Hahsler}
