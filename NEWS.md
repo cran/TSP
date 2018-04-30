@@ -1,3 +1,9 @@
+# TSP 1.1-6 (04/29/2018)
+
+## Bugfixes
+* Start for insertion algorithms is now coerced to integer.
+* Fixed problem with TSP with 1 city on Win 32 on R 3.5.0.
+
 # TSP 1.1-5 (02/21/2017)
 
 * fixed TSP labels.
