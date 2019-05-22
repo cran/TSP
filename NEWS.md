@@ -1,3 +1,12 @@
+# TSP 1.1-7 (05/22/2018)
+
+## Bugfixes
+* concorde_path now normalizes the path (translates . and ~).
+* reformulate_ATSP_as_TSP now keeps the method attribute (i.e., used distance measure)
+* TSP and ATSP gained parameter method to store the name of the used distance metric.
+* Fixed read_TSPLIB for EDGE_WEIGHT_FORMAT of LOWER_ROW, LOWER_DIAG_ROW, UPPER_COL and UPPER_DIAG_COL 
+  (reported by klukac).  
+
 # TSP 1.1-6 (04/29/2018)
 
 ## Bugfixes
