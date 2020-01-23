@@ -29,12 +29,12 @@ methods <- c("nearest_insertion", "farthest_insertion", "cheapest_insertion",
     "arbitrary_insertion", "nn", "repetitive_nn", "two_opt")
 
 tours <- sapply(methods, FUN = function(m) solve_TSP(USCA50, method = m),
-                simplify = FALSE)         
+                simplify = FALSE)
 ## tours$concorde  <- solve_TSP(tsp, method = "concorde")
 
 tours[[1]]
 
-dotchart(sort(c(sapply(tours, tour_length), optimal = 14497)), 
+dotchart(sort(c(sapply(tours, tour_length), optimal = 14497)),
 xlab = "tour length", xlim = c(0, 20000))
 
 
@@ -71,8 +71,10 @@ tail(labels(path))
 ###################################################
 ### code chunk number 9: map1
 ###################################################
-library("maps")
+if(require(sp) && require(maps) && require(maptools)) {
+
 library("sp")
+library("maps")
 library("maptools")
 
 data("USCA312_map")
@@ -81,25 +83,30 @@ plot_path <- function(path){
     plot(as(USCA312_coords, "Spatial"), axes = TRUE)
     plot(USCA312_basemap, add = TRUE, col = "gray")
     points(USCA312_coords, pch = 3, cex = 0.4, col = "red")
-    
+
     path_line <- SpatialLines(list(Lines(list(Line(USCA312_coords[path,])),
 	ID="1")))
     plot(path_line, add=TRUE, col = "black")
-    points(USCA312_coords[c(head(path,1), tail(path,1)),], pch = 19, 
+    points(USCA312_coords[c(head(path,1), tail(path,1)),], pch = 19,
         col = "black")
 }
 
 plot_path(path)
 
+} else {
+    plot(NA, xlim= c(0,1), ylim = c(0,1)); text(.5, .5, "Suggested packages not available")
+
+}
+
 
 ###################################################
-### code chunk number 10: TSP.Rnw:794-795
+### code chunk number 10: TSP.Rnw:801-802
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 11: TSP.Rnw:798-809
+### code chunk number 11: TSP.Rnw:805-816
 ###################################################
 atsp <- as.ATSP(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -121,27 +128,27 @@ plot_path(path)
 
 
 ###################################################
-### code chunk number 13: TSP.Rnw:833-835
+### code chunk number 13: TSP.Rnw:840-842
 ###################################################
 tsp <- reformulate_ATSP_as_TSP(atsp)
 tsp
 
 
 ###################################################
-### code chunk number 14: TSP.Rnw:847-849 (eval = FALSE)
+### code chunk number 14: TSP.Rnw:854-856 (eval = FALSE)
 ###################################################
 ## tour <- solve_TSP(tsp, method = "concorde")
 ## tour <- as.TOUR(tour[tour <= n_of_cities(atsp)])
 
 
 ###################################################
-### code chunk number 15: TSP.Rnw:871-872
+### code chunk number 15: TSP.Rnw:878-879
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 16: TSP.Rnw:875-885
+### code chunk number 16: TSP.Rnw:882-892
 ###################################################
 m <- as.matrix(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -156,12 +163,12 @@ atsp[, la_ny] <- c(m[la, -c(ny,la)], 0)
 
 
 ###################################################
-### code chunk number 17: TSP.Rnw:890-899
+### code chunk number 17: TSP.Rnw:897-906
 ###################################################
 tour <- solve_TSP(atsp, method ="nearest_insertion")
 tour
 
-path_labels <- c("New York, NY", 
+path_labels <- c("New York, NY",
     labels(cut_tour(tour, la_ny)), "Los Angeles, CA")
 path_ids <- match(path_labels, labels(USCA312))
 
@@ -176,13 +183,13 @@ plot_path(path_ids)
 
 
 ###################################################
-### code chunk number 19: TSP.Rnw:943-944
+### code chunk number 19: TSP.Rnw:950-951
 ###################################################
 set.seed(4444)
 
 
 ###################################################
-### code chunk number 20: TSP.Rnw:946-950
+### code chunk number 20: TSP.Rnw:953-957
 ###################################################
 data("iris")
 tsp <- TSP(dist(iris[-5]), labels = iris[, "Species"])
@@ -202,11 +209,11 @@ abline(v = which(labels(tour)=="boundary"), col = "red")
 
 
 ###################################################
-### code chunk number 22: TSP.Rnw:988-992
+### code chunk number 22: TSP.Rnw:995-999
 ###################################################
 out <- rle(labels(tour))
-data.frame(Species = out$values, 
-           Lenghts = out$lengths, 
+data.frame(Species = out$values,
+           Lenghts = out$lengths,
            Pos = cumsum(out$lengths))
 
 
@@ -216,8 +223,7 @@ data.frame(Species = out$values,
 prc <- prcomp(iris[1:4])
 plot(prc$x, pch = as.numeric(iris[,5]), col =  as.numeric(iris[,5]))
 
-indices <- c(tour, tour[1])
-indices[indices > 150] <- NA
-lines(prc$x[indices,])
+paths <- cut_tour(tour, cut = "boundary")
+for(p in paths) lines(prc$x[p, ])
 
 
