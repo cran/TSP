@@ -77,7 +77,14 @@ library("sp")
 library("maps")
 library("maptools")
 
-data("USCA312_map")
+data("USCA312_GPS")
+
+# create spatial coordinates and a basemap using WGS84 projection.
+USCA312_coords <- SpatialPointsDataFrame(cbind(USCA312_GPS$long, USCA312_GPS$lat),
+  proj4string=CRS("+proj=longlat +datum=WGS84"), data = USCA312_GPS)
+USCA312_basemap <- map2SpatialLines(map("world",
+  xlim=c(-166,-47), ylim=c(15,83),
+  plot=FALSE), proj4string=CRS("+proj=longlat +datum=WGS84"))
 
 plot_path <- function(path){
     plot(as(USCA312_coords, "Spatial"), axes = TRUE)
@@ -100,13 +107,13 @@ plot_path(path)
 
 
 ###################################################
-### code chunk number 10: TSP.Rnw:801-802
+### code chunk number 10: TSP.Rnw:808-809
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 11: TSP.Rnw:805-816
+### code chunk number 11: TSP.Rnw:812-823
 ###################################################
 atsp <- as.ATSP(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -128,27 +135,27 @@ plot_path(path)
 
 
 ###################################################
-### code chunk number 13: TSP.Rnw:840-842
+### code chunk number 13: TSP.Rnw:847-849
 ###################################################
 tsp <- reformulate_ATSP_as_TSP(atsp)
 tsp
 
 
 ###################################################
-### code chunk number 14: TSP.Rnw:854-856 (eval = FALSE)
+### code chunk number 14: TSP.Rnw:861-863 (eval = FALSE)
 ###################################################
 ## tour <- solve_TSP(tsp, method = "concorde")
 ## tour <- as.TOUR(tour[tour <= n_of_cities(atsp)])
 
 
 ###################################################
-### code chunk number 15: TSP.Rnw:878-879
+### code chunk number 15: TSP.Rnw:885-886
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 16: TSP.Rnw:882-892
+### code chunk number 16: TSP.Rnw:889-899
 ###################################################
 m <- as.matrix(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -163,7 +170,7 @@ atsp[, la_ny] <- c(m[la, -c(ny,la)], 0)
 
 
 ###################################################
-### code chunk number 17: TSP.Rnw:897-906
+### code chunk number 17: TSP.Rnw:904-913
 ###################################################
 tour <- solve_TSP(atsp, method ="nearest_insertion")
 tour
@@ -183,13 +190,13 @@ plot_path(path_ids)
 
 
 ###################################################
-### code chunk number 19: TSP.Rnw:950-951
+### code chunk number 19: TSP.Rnw:957-958
 ###################################################
 set.seed(4444)
 
 
 ###################################################
-### code chunk number 20: TSP.Rnw:953-957
+### code chunk number 20: TSP.Rnw:960-964
 ###################################################
 data("iris")
 tsp <- TSP(dist(iris[-5]), labels = iris[, "Species"])
@@ -209,7 +216,7 @@ abline(v = which(labels(tour)=="boundary"), col = "red")
 
 
 ###################################################
-### code chunk number 22: TSP.Rnw:995-999
+### code chunk number 22: TSP.Rnw:1002-1006
 ###################################################
 out <- rle(labels(tour))
 data.frame(Species = out$values,

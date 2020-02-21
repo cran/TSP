@@ -1,6 +1,6 @@
-3144ccaf9dc7d2ffe231cf1d6cc5e3f0 *DESCRIPTION
+28f533ce925658e7b23be86723ce004b *DESCRIPTION
 b2c2d8bae25226353017db593b866e20 *NAMESPACE
-3955e7ee9bca4e1b3896e78bd95667f2 *NEWS.md
+7674320f69526088b1c70aef74729621 *NEWS.md
 53fd0b4cc668ff06fe00424278f70ae8 *R/AAAparameter.R
 6884890a132ba1cbef7290386d2c7b26 *R/ATSP.R
 ef5606a4c60f2346bd801e9a03a52d9e *R/ETSP.R
@@ -20,12 +20,12 @@ a5dbb0ee3ef7fa6d459387fff2c1aaf6 *R/write_TSPLIB.R
 8c4fa3da715e93723b9e7ff951281008 *README.md
 51023c861c1fe2b5be47099e4f80cdfc *build/vignette.rds
 cbc08fbda69c99bfd002bd94e83f18e9 *data/USCA312.rda
-3665d4172acdbe24f0968e06c4f9062a *data/USCA312_map.rda
+4e7f660688a4bc16dee5b14a5a9a41c3 *data/USCA312_GPS.rda
 654e60750bbc434a2c4ef01f6ac38885 *data/USCA50.rda
 be45c0307d5298f11d16981be22ae321 *inst/CITATION
-e8896d6532e7aca4d2739d18cddcca79 *inst/doc/TSP.R
-f75a57a85092d73a94d01fd1b1e4b4b7 *inst/doc/TSP.Rnw
-ba05f0bccfe998b46e764ccbf3de4b0f *inst/doc/TSP.pdf
+04f5f5784d807b00cafc952979e65f77 *inst/doc/TSP.R
+417ce8acf2d479da4b1c6923bac655e4 *inst/doc/TSP.Rnw
+2014d84cf38c4cff008df186a77c5502 *inst/doc/TSP.pdf
 9d75b7ee2a0295809647546e2caec298 *inst/examples/d493.tsp
 92e0f7e2d80c7917481425386862771b *man/ATSP.Rd
 26315ee53dca90df61f32ed3d0f4dc33 *man/Concorde.Rd
@@ -33,7 +33,7 @@ ba05f0bccfe998b46e764ccbf3de4b0f *inst/doc/TSP.pdf
 d2954b8209bf2a5c30c35a005483780c *man/TOUR.Rd
 ff8080911158b4309f2c13c717e31505 *man/TSP.Rd
 0d31b3ee76eeed28a3b2572e70c6834c *man/TSPLIB.Rd
-ff80d05684e670a2a3ddd829551063fb *man/USCA312.Rd
+597c47801ad15f2a7609c19826046c79 *man/USCA312.Rd
 d10b52711ceb1e8a8ab2db20292e5733 *man/cut_tour.Rd
 ad9af1a18be586698f5596918e97bec2 *man/insert_dummy.Rd
 ee3b8983877711166a54b91be7dd4cc1 *man/reformulate_ATSP_as_TSP.Rd
@@ -50,7 +50,7 @@ fdf8786b17a9dc12ae34dc7b8c70134d *src/tour_length.c
 78002959873e428aaeba65f4b0ea5e05 *tests/testthat/test-concorde.R
 de9c7c23e346b1a888f5410ded78e091 *tests/testthat/test-insert_cut_etc.R
 998eecca7ceecf1bffb9b82d7305e430 *tests/testthat/test-solve_TSP.R
-f75a57a85092d73a94d01fd1b1e4b4b7 *vignettes/TSP.Rnw
+417ce8acf2d479da4b1c6923bac655e4 *vignettes/TSP.Rnw
 e5fefe1a7b9cc2d989c7a10694f263be *vignettes/TSP.bib
 c760b2e30089afe4035f4c86a0faca1a *vignettes/overview.odg
 76b5cfce452ac70b4c4b51bf5164887d *vignettes/overview.pdf
