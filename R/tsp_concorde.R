@@ -64,7 +64,9 @@ tsp_concorde <- function(x, control = NULL){
 
   ## check x
   if(inherits(x, "TSP")){
-    if(n_of_cities(x) < 10) MAX <- 2^15 - 1 else MAX <- 2^31 - 1
+    #if(n_of_cities(x) < 10) MAX <- 2^15 - 1 else MAX <- 2^31 - 1
+    ### MFH: concorde may overflow with 2^31-1
+    if(n_of_cities(x) < 10) MAX <- 2^15 - 1 else MAX <- 2^28 - 1
     x <- .prepare_dist_concorde(x, MAX, control$precision)
 
   }else if(inherits(x, "ETSP")) {
@@ -140,27 +142,29 @@ tsp_linkern <- function(x, control = NULL){
   ## check x
   if(inherits(x, "TSP")) {
 
-    MAX <- 2^31 - 1
+    #MAX <- 2^31 - 1
+    MAX <- 2^28 - 1
     x <- .prepare_dist_concorde(x, MAX, control$precision)
 
   }else if(inherits(x, "ETSP")) {
     ## nothing to do
   } else stop("Linkern only works for TSP and ETSP.")
 
-  ## get temp files
+  ## get temp files and change working directory
   wd <- tempdir()
-  temp_file <- tempfile(tmpdir = wd)
+  dir <- getwd()
+  setwd(wd)
+  on.exit(setwd(dir))
+
+  ### fix for Windows by Stephen Eick
+  ##temp_file <- tempfile(tmpdir = wd)
+  temp_file <- basename(tempfile(tmpdir = wd))
 
   ## file name needs to be unique
   tmp_file_in  <- paste(temp_file, ".dat", sep = "")
   tmp_file_out <- paste(temp_file, ".sol", sep = "")
 
   write_TSPLIB(x, file = tmp_file_in, precision = 0)
-
-  ## change working directory
-  dir <- getwd()
-  setwd(wd)
-  on.exit(setwd(dir))
 
   ## do the call and read back result
   ## we do not check return values of concorde since they are not
