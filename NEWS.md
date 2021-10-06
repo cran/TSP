@@ -1,3 +1,8 @@
+# TSP 1.1-11 (10/06/2021)
+
+## Bugfixes
+* cut_tour: fixed dropped city for multiple cut points (reported by RegularnaMatrica)
+
 # TSP 1.1-10 (04/17/2020)
 
 ## Bugfixes
