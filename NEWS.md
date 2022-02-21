@@ -1,3 +1,9 @@
+# TSP 1.2-0 (02/21/2022)
+
+## Changes
+* The package uses now roxygen.
+* C code has now long vector support for dist.
+
 # TSP 1.1-11 (10/06/2021)
 
 ## Bugfixes
