@@ -24,11 +24,12 @@
 #'
 #' Currently the following methods are available:
 #' - "identity", "random" return a tour representing the order in the data
-#'   (identity order) or a random order.
+#'   (identity order) or a random order. \[TSP, ATSP\]
+#'
 #' - "nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"
 #'   Nearest, farthest, cheapest and
 #'   arbitrary insertion algorithms for a symmetric and asymmetric TSP
-#'   (Rosenkrantz et al. 1977).
+#'   (Rosenkrantz et al. 1977). \[TSP, ATSP\]
 #'
 #'   The distances between cities are stored in a distance matrix \eqn{D} with
 #'   elements \eqn{d(i,j)}.  All insertion algorithms start with a tour
@@ -59,7 +60,7 @@
 #'
 #' - "nn", "repetitive_nn" Nearest neighbor and repetitive
 #'   nearest neighbor algorithms for symmetric and asymmetric TSPs (Rosenkrantz
-#'   et al. 1977).
+#'   et al. 1977). \[TSP, ATSP\]
 #'
 #'   The algorithm starts with a tour containing a random city. Then the
 #'   algorithm always adds to the last city on the tour the nearest not yet
@@ -71,12 +72,12 @@
 #'   Additional control options:
 #'   - "start" index of the first city (default: a random city).
 #'
-#' - "two_opt" Two edge exchange improvement procedure (Croes 1958).
+#' - "two_opt" Two edge exchange improvement procedure (Croes 1958). \[TSP, ATSP\]
 #'
 #'   This is a tour refinement procedure which systematically exchanges two edges
 #'   in the graph represented by the distance matrix till no improvements are
 #'   possible. Exchanging two edges is equal to reversing part of the tour. The
-#'   resulting tour is called \emph{2-optimal.}
+#'   resulting tour is called _2-optimal._
 #'
 #'   This method can be applied to tours created by other methods or used as its
 #'   own method. In this case improvement starts with a random tour.
@@ -87,10 +88,13 @@
 #'   - "two_opt_repetitions" number of times to try two_opt with a
 #'     different initial random tour (default: 1).
 #'
-#' - "concorde" Concorde algorithm (Applegate et al. 2001).
+#' - "concorde" Concorde algorithm (Applegate et al. 2001). \[TSP, ETSP\]
 #'
-#'   Concorde is an advanced exact TSP solver for \emph{only symmetric} TSPs
-#'   based on branch-and-cut.  The program is not included in this package and
+#'   Concorde is an advanced exact TSP solver for _symmetric_ TSPs
+#'   based on branch-and-cut.
+#'   ATSPs can be solved using [reformulate_ATSP_as_TSP()] done automatically
+#'   with `as_TSP = TRUE`.
+#'   The program is not included in this package and
 #'   has to be obtained and installed separately.
 #'
 #'   Additional control options:
@@ -108,7 +112,7 @@
 #'     `precision` placed to the left). The interface to Concorde uses
 #'     [write_TSPLIB()].
 #'
-#' - "linkern" Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003).
+#' - "linkern" Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). \[TSP, ETSP\]
 #'
 #'   The Lin-Kernighan (Lin and Kernighan 1973) heuristic uses variable \eqn{k}
 #'   edge exchanges to improve an initial tour.  The program is not included in
@@ -118,14 +122,14 @@
 #'
 #' **Treatment of `NA`s and infinite values in `x`**
 #'
-#' [TSP] and
-#' [ATSP] contain distances and `NA`s are not allowed. `Inf` is
+#' [TSP] and [ATSP] need to contain valid distances. `NA`s are not allowed. `Inf` is
 #' allowed and can be used to model the missing edges in incomplete graphs
-#' (i.e., the distance between the two objects is infinite). Internally,
-#' `Inf` is replaced by a large value given by \eqn{max(x) + 2 range(x)}.
+#' (i.e., the distance between the two objects is infinite) or unfeasable connections.
+#' Internally, `Inf` is replaced by a large value given by \eqn{max(x) + 2 range(x)}.
 #' Note that the solution might still place the two objects next to each other
 #' (e.g., if `x` contains several unconnected subgraphs) which results in
-#' a path length of `Inf`.
+#' a path length of `Inf`. `-Inf` is replaced by \eqn{min(x) - 2 range(x)} and
+#' can be used to encourage the solver to place two objects next to each other.
 #'
 #' **Parallel execution support**
 #'
@@ -216,9 +220,9 @@
 #' }
 #'
 #' ## add some tours using repetition and two_opt refinements
-#' tours$'nn+two_opt' <- solve_TSP(USCA50, method="nn", two_opt=TRUE)
-#' tours$'nn+rep_10' <- solve_TSP(USCA50, method="nn", rep=10)
-#' tours$'nn+two_opt+rep_10' <- solve_TSP(USCA50, method="nn", two_opt=TRUE, rep=10)
+#' tours$'nn+two_opt' <- solve_TSP(USCA50, method = "nn", two_opt = TRUE)
+#' tours$'nn+rep_10' <- solve_TSP(USCA50, method = "nn", rep = 10)
+#' tours$'nn+two_opt+rep_10' <- solve_TSP(USCA50, method = "nn", two_opt = TRUE, rep = 10)
 #' tours$'arbitrary_insertion+two_opt' <- solve_TSP(USCA50)
 #'
 #' ## show first tour
@@ -228,55 +232,66 @@
 #' opt <- 14497 # obtained by Concorde
 #' tour_lengths <- c(sort(sapply(tours, tour_length), decreasing = TRUE),
 #'   optimal = opt)
-#' dotchart(tour_lengths/opt*100-100, xlab = "percent excess over optimum")
+#' dotchart(tour_lengths / opt * 100 - 100, xlab = "percent excess over optimum")
 #' @export
-solve_TSP <- function(x, method = NULL, control = NULL, ...)
+solve_TSP <- function(x,
+  method = NULL,
+  control = NULL,
+  ...)
   UseMethod("solve_TSP")
 
 ## TSP
 #' @rdname solve_TSP
 #' @export
-solve_TSP.TSP <- function(x, method = NULL, control = NULL, ...) {
+solve_TSP.TSP <- function(x,
+  method = NULL,
+  control = NULL,
+  ...) {
   .solve_TSP(x, method, control, ...)
 }
 
 ## ATSP
 #' @rdname solve_TSP
 #' @export
-solve_TSP.ATSP <- function(x, method = NULL, control = NULL, as_TSP = FALSE, ...) {
+solve_TSP.ATSP <-
+  function(x,
+    method = NULL,
+    control = NULL,
+    as_TSP = FALSE,
+    ...) {
+    m <- pmatch(tolower(method), c("concorde", "linkern"))
+    if (!is.na(m) && length(m) > 0L && !as_TSP) {
+      warning(
+        "NOTE: Solver cannot solve the ATSP directly. Reformulating ATSP as TSP. Use 'as_TSP = TRUE' to supress this warning.\n"
+      )
+      as_TSP <- TRUE
+    }
 
-  m <- pmatch(tolower(method), c("concorde", "linkern"))
-  if(!as_TSP && !is.na(m) && length(m) > 0L) {
-    warning("NOTE: Solver cannot solve the ATSP directly. Reformulating ATSP as TSP. Use 'as_TSP = TRUE' to supress this warning.\n")
-    as_TSP <- TRUE
+    # reformulate ATSP as TSP
+    if (as_TSP) {
+      x_atsp <- x
+      x <- reformulate_ATSP_as_TSP(x_atsp)
+    }
+
+    tour <- .solve_TSP(x, method, control, ...)
+
+    if (as_TSP)
+      tour <- filter_ATSP_as_TSP_dummies(tour, atsp = x_atsp)
+
+    tour
   }
-
-  # reformulate ATSP as TSP
-  if(as_TSP) {
-    x_atsp <- x
-    x <- reformulate_ATSP_as_TSP(x_atsp)
-  }
-
-  tour <- .solve_TSP(x, method, control, ...)
-
-  if(as_TSP) {
-    tour <- TOUR(tour[tour<=n_of_cities(x_atsp)], method = attr(tour, "method"), tsp = x_atsp)
-    # Tour may be reversed
-    tour_rev  <- TOUR(rev(tour), method = attr(tour, "method"), tsp = x_atsp)
-    if(tour_length(tour) > tour_length(tour_rev)) tour <- tour_rev
-  }
-
-  tour
-}
 
 ## ETSP
 #' @rdname solve_TSP
 #' @export
-solve_TSP.ETSP <- function(x, method = NULL, control = NULL, ...) {
-
+solve_TSP.ETSP <- function(x,
+  method = NULL,
+  control = NULL,
+  ...) {
   ## all but concorde and linkern can only do TSP
   m <- pmatch(tolower(method), c("concorde", "linkern"))
-  if(length(m) == 0L || is.na(m)) x <- as.TSP(x)
+  if (length(m) == 0L || is.na(m))
+    x <- as.TSP(x)
 
   .solve_TSP(x, method, control, ...)
 }
@@ -285,18 +300,22 @@ solve_TSP.ETSP <- function(x, method = NULL, control = NULL, ...) {
 
 ## Deal with Inf: punish (-)Inf with max (min) +(-) 2*range
 .replaceInf <- function(x, pInf = NULL, nInf = NULL) {
-  if(any(is.infinite(x))) {
+  if (any(is.infinite(x))) {
     range_x <- range(x, na.rm = TRUE, finite = TRUE)
 
     # data with only a single non-inf value.
     diff_range <- diff(range_x)
-    if(diff_range == 0) {
-      if(range_x[1] == 0) diff_range <- 1
-      else diff_range <- range_x[1] * 2
+    if (diff_range == 0) {
+      if (range_x[1] == 0)
+        diff_range <- 1
+      else
+        diff_range <- range_x[1] * 2
     }
 
-    if(is.null(pInf)) pInf <- range_x[2] + 2*diff_range
-    if(is.null(nInf)) nInf <- range_x[1] - 2*diff_range
+    if (is.null(pInf))
+      pInf <- range_x[2] + 2 * diff_range
+    if (is.null(nInf))
+      nInf <- range_x[1] - 2 * diff_range
     x[x == Inf] <- pInf
     x[x == -Inf] <- nInf
   }
@@ -304,8 +323,10 @@ solve_TSP.ETSP <- function(x, method = NULL, control = NULL, ...) {
 }
 
 ## workhorse
-.solve_TSP <- function(x, method = NULL, control = NULL, ...) {
-
+.solve_TSP <- function(x,
+  method = NULL,
+  control = NULL,
+  ...) {
   ## add ... to control
   control <- c(control, list(...))
 
@@ -319,29 +340,33 @@ solve_TSP.ETSP <- function(x, method = NULL, control = NULL, ...) {
     "arbitrary_insertion",
     "nn",
     "repetitive_nn",
-    "2-opt", ### deprecated
+    ### deprecate use two_opt
+    "2-opt",
     "two_opt",
     "concorde",
     "linkern"
   )
 
   ## default is arbitrary_insertion + two_opt
-  if(is.null(method)) {
+  if (is.null(method)) {
     method <- "arbitrary_insertion"
-    if(is.null(control$two_opt))
+    if (is.null(control[["two_opt"]]))
       control <- c(control, list(two_opt = TRUE))
-  } else method <- match.arg(tolower(method), methods)
+  } else
+    method <- match.arg(tolower(method), methods)
 
 
   ## check for NAs
-  if(any(is.na(x))) stop("NAs not allowed!")
+  if (any(is.na(x)))
+    stop("NAs not allowed!")
 
   ## Inf
   x_ <- .replaceInf(x)
 
   ## work horses
   .solve_TSP_worker <- function(x_, method, control) {
-    order <- switch(method,
+    order <- switch(
+      method,
       identity = seq(n_of_cities(x_)),
       random = sample(n_of_cities(x_)),
       nearest_insertion = tsp_insertion(x_, type = "nearest", control = control),
@@ -358,31 +383,40 @@ solve_TSP.ETSP <- function(x, method = NULL, control = NULL, ...) {
     )
 
     ### do refinement two_opt
-    if(!is.null(control$two_opt) && control$two_opt) {
+    if (!is.null(control[["two_opt"]]) && control[["two_opt"]]) {
       order <- tsp_two_opt(x_, control = c(control, list(tour = order)))
       method <- paste(method , "+two_opt", sep = "")
     }
 
-    TOUR(order, method=method, tsp=x)
+    TOUR(order, method = method, tsp = x)
   }
 
   ## do rep?
-  if(!is.null(control$rep)) n <- control$rep
-  else n <- 1L
-
-  if(method == "concorde" || method == "linkern") {
+  if (!is.null(control$rep))
+    n <- control$rep
+  else
     n <- 1L
-    control$two_opt <- NULL ## no two_opt for these!
-  }
-  if(method == "repetitive_nn") n <- 1L
 
-  if(n==1L) return(.solve_TSP_worker(x_, method, control))
+  ## no rep or two_opt for these!
+  if (method == "concorde" || method == "linkern") {
+    n <- 1L
+    control$two_opt <- NULL
+  }
+
+  ## no rep!
+  if (method == "repetitive_nn")
+    n <- 1L
+
+  if (n == 1L)
+    return(.solve_TSP_worker(x_, method, control))
 
   #l <- replicate(n, .solve_TSP_worker(x_, method, control), simplify = FALSE)
-  l <- foreach(i = 1:n) %dopar% .solve_TSP_worker(x_, method, control)
-
+  l <-
+    foreach(i = 1:n) %dopar% .solve_TSP_worker(x_, method, control)
 
   l <- l[[which.min(sapply(l, attr, "tour_length"))]]
-  attr(l, "method") <- paste(attr(l, "method"), "_rep_", n, sep="")
+  attr(l, "method") <-
+    paste(attr(l, "method"), "_rep_", n, sep = "")
+
   return(l)
 }

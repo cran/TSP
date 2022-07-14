@@ -1,3 +1,12 @@
+# TSP 1.2-1 (07/14/2022)
+
+## Changes
+* added filter_ATSP_as_TSP_dummies().
+* tour_length() now also accepts integer vectors instead of TOUR.
+
+## Bugfix
+* Small integer values are now left unscaled for Concorde.
+
 # TSP 1.2-0 (02/21/2022)
 
 ## Changes

@@ -1,12 +1,15 @@
 Package: TSP
 Type: Package
 Title: Traveling Salesperson Problem (TSP)
-Version: 1.2-0
-Date: 2022-02-21
-Authors@R: c(
-	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
-	    email = "mhahsler@lyle.smu.edu"),
-	person("Kurt", "Hornik", role = c("aut", "cph")))
+Version: 1.2-1
+Date: 2022-07-14
+Authors@R: 
+  c(person("Michael", "Hahsler", 
+           role = c("aut", "cre", "cph"),
+		       email = "mhahsler@lyle.smu.edu",
+		       comment = c(ORCID = "0000-0003-2716-1405")),
+	  person("Kurt", "Hornik", 
+	         role = c("aut", "cph")))
 Description: Basic infrastructure and some algorithms for the traveling
     salesperson problem (also traveling salesman problem; TSP).
     The package provides some simple algorithms and
@@ -21,13 +24,14 @@ Depends: R (>= 3.5.0)
 Imports: graphics, foreach, utils, stats, grDevices
 Suggests: sp, maps, maptools, doParallel, testthat
 Encoding: UTF-8
-RoxygenNote: 7.1.2.9000
+RoxygenNote: 7.2.0
 License: GPL-3
 Copyright: All code is Copyright (C) Michael Hahsler and Kurt Hornik.
 NeedsCompilation: yes
-Packaged: 2022-02-21 20:36:40 UTC; hahsler
-Author: Michael Hahsler [aut, cre, cph],
+Packaged: 2022-07-14 13:35:53 UTC; hahsler
+Author: Michael Hahsler [aut, cre, cph]
+    (<https://orcid.org/0000-0003-2716-1405>),
   Kurt Hornik [aut, cph]
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2022-02-21 21:10:02 UTC
+Date/Publication: 2022-07-14 14:40:02 UTC
