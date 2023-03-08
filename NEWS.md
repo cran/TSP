@@ -1,3 +1,11 @@
+# TSP 1.2-3 (3/08/2023)
+
+## New Features
+* plot for ETSP gained parameter labels to plot city labels.
+
+## Bug Fixes
+* register S3 method n_of_cities.default
+
 # TSP 1.2-2 (01/24/2023)
 
 ## Bug Fixes
