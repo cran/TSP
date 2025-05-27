@@ -1,8 +1,8 @@
 Package: TSP
 Type: Package
-Title: Traveling Salesperson Problem (TSP)
-Version: 1.2-4
-Date: 2023-04-03
+Title: Infrastructure for the Traveling Salesperson Problem
+Version: 1.2-5
+Date: 2025-05-27
 Authors@R: 
   c(person("Michael", "Hahsler", 
     role = c("aut", "cre", "cph"),
@@ -26,14 +26,14 @@ Depends: R (>= 3.5.0)
 Imports: graphics, foreach, utils, stats, grDevices
 Suggests: maps, doParallel, testthat
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 License: GPL-3
 Copyright: All code is Copyright (C) Michael Hahsler and Kurt Hornik.
 NeedsCompilation: yes
-Packaged: 2023-04-04 01:12:42 UTC; hahsler
-Author: Michael Hahsler [aut, cre, cph]
-    (<https://orcid.org/0000-0003-2716-1405>),
-  Kurt Hornik [aut, cph] (<https://orcid.org/0000-0003-4198-9911>)
+Packaged: 2025-05-27 15:48:33 UTC; mhahsler
+Author: Michael Hahsler [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0003-2716-1405>),
+  Kurt Hornik [aut, cph] (ORCID: <https://orcid.org/0000-0003-4198-9911>)
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2023-04-04 15:30:12 UTC
+Date/Publication: 2025-05-27 16:40:02 UTC
