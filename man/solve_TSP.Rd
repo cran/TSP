@@ -34,14 +34,12 @@ An object of class \link{TOUR}.
 \description{
 Common interface to all TSP solvers in this package.
 }
-\details{
-\strong{TSP Methods}
-
+\section{TSP Methods}{
 Currently the following methods are available:
 \itemize{
-\item "identity", "random" return a tour representing the order in the data
+\item \strong{"identity", "random"} return a tour representing the order in the data
 (identity order) or a random order. [TSP, ATSP]
-\item "nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"
+\item \strong{"nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"}
 Nearest, farthest, cheapest and
 arbitrary insertion algorithms for a symmetric and asymmetric TSP
 (Rosenkrantz et al. 1977). [TSP, ATSP]
@@ -74,7 +72,7 @@ Additional control options:
 \itemize{
 \item "start" index of the first city (default: a random city).
 }
-\item "nn", "repetitive_nn" Nearest neighbor and repetitive
+\item \strong{"nn", "repetitive_nn"} Nearest neighbor and repetitive
 nearest neighbor algorithms for symmetric and asymmetric TSPs (Rosenkrantz
 et al. 1977). [TSP, ATSP]
 
@@ -89,7 +87,31 @@ Additional control options:
 \itemize{
 \item "start" index of the first city (default: a random city).
 }
-\item "two_opt" Two edge exchange improvement procedure (Croes 1958). [TSP, ATSP]
+\item \strong{"sa"} Simulated Annealing for TSPs (Kirkpatrick et al, 1983) [TSP, ATSP]
+
+A tour refinement method that uses simulated annealing with subtour
+reversal as local move. The used optimizer is
+\code{\link[stats:optim]{stats::optim()}} with method \code{"SANN"}. This method is
+typically a lot slower than \code{"two_opt"} and requires parameter tuning for the
+cooling schedule.
+
+Additional control options:
+\itemize{
+\item "tour" an existing tour which should be improved.
+If no tour is given, a random tour is used.
+\item "local_move" a function that creates a local move with the current
+tour as the first and the TSP as the second parameter. Defaults to
+randomized subtour reversal.
+\item "temp" initial temperature. Defaults to the length of the current tour divided
+by the number of cities.
+\item "tmax" number of evaluations per temperature step. Default is 10.
+\item "maxit" number of evaluations. Default is 10000 for speed, but larger values
+will result in more competitive results.
+\item "trace" set to 1 to print progress.
+}
+
+See \code{\link[stats:optim]{stats::optim()}} for more details on the parameters.
+\item \strong{"two_opt"} Two edge exchange improvement procedure (Croes 1958). [TSP, ATSP]
 
 This is a tour refinement procedure which systematically exchanges two edges
 in the graph represented by the distance matrix till no improvements are
@@ -106,7 +128,7 @@ If no tour is given, a random tour is used.
 \item "two_opt_repetitions" number of times to try two_opt with a
 different initial random tour (default: 1).
 }
-\item "concorde" Concorde algorithm (Applegate et al. 2001). [TSP, ETSP]
+\item \strong{"concorde"} Concorde algorithm (Applegate et al. 2001). [TSP, ETSP]
 
 Concorde is an advanced exact TSP solver for \emph{symmetric} TSPs
 based on branch-and-cut.
@@ -130,8 +152,9 @@ passed on to Concorde. Note that therefore the results produced by Concorde
 \eqn{10^{precision}} (i.e., the decimal point has to be shifted
 \code{precision} placed to the left). The interface to Concorde uses
 \code{\link[=write_TSPLIB]{write_TSPLIB()}}.
+\item "verbose" logical; \code{FALSE} suppresses the output printed to the terminal.
 }
-\item "linkern" Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). [TSP, ETSP]
+\item \strong{"linkern"} Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). [TSP, ETSP]
 
 The Lin-Kernighan (Lin and Kernighan 1973) heuristic uses variable \eqn{k}
 edge exchanges to improve an initial tour.  The program is not included in
@@ -139,9 +162,23 @@ this package and has to be obtained and installed separately (see \link{Concorde
 
 Additional control options: see Concorde above.
 }
+}
 
-\strong{Treatment of \code{NA}s and infinite values in \code{x}}
+\section{Verbose Operation}{
+Most implementations provide verbose output to monitor progress using the
+logical control parameter "verbose".
+}
 
+\section{Additional refinement and random restarts}{
+Most constructive methods also accept the following extra control parameters:
+\itemize{
+\item "two_opt": a logical indicating if two-opt refinement should be performed on the
+constructed tour.
+\item "rep": an integer indicating how many replications (random restarts) should be performed.
+}
+}
+
+\section{Treatment of \code{NA}s and infinite values in \code{x}}{
 \link{TSP} and \link{ATSP} need to contain valid distances. \code{NA}s are not allowed. \code{Inf} is
 allowed and can be used to model the missing edges in incomplete graphs
 (i.e., the distance between the two objects is infinite) or infeasible connections.
@@ -150,9 +187,9 @@ Note that the solution might still place the two objects next to each other
 (e.g., if \code{x} contains several unconnected subgraphs) which results in
 a path length of \code{Inf}. \code{-Inf} is replaced by \eqn{min(x) - 2 range(x)} and
 can be used to encourage the solver to place two objects next to each other.
+}
 
-\strong{Parallel execution support}
-
+\section{Parallel execution support}{
 All heuristics can be used with the control arguments \code{repetitions}
 (uses the best from that many repetitions with random starts) and
 \code{two_opt} (a logical indicating if two_opt refinement should be
@@ -161,19 +198,21 @@ performed). If several repetitions are done (this includes method
 in parallel on multiple cores/machines. To enable parallel execution an
 appropriate parallel backend needs to be registered (e.g., load
 \pkg{doParallel} and register it with \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}).
+}
 
-\strong{Solving ATSP and ETSP}
-
+\section{Solving ATSP and ETSP}{
 Some solvers (including Concorde) cannot directly solve \link{ATSP}
 directly. \code{ATSP} can be reformulated as larger \code{TSP} and solved
 this way. For convenience, \code{solve_TSP()} has an extra argument
 \code{as_TSP} which can be set to \code{TRUE} to automatically solve the
 \code{ATSP} reformulated as a \code{TSP} (see \code{\link[=reformulate_ATSP_as_TSP]{reformulate_ATSP_as_TSP()}}).
 
-Only methods "concorde" and "linkern" can solve \link{ETSP}s directly.
-For all other methods, ETSPs are currently converted into TSPs by creating a
-distance matrix and then solved.
+Only methods "concorde" and "linkern" currently solve \link{ETSP}s directly.
+For all other methods, ETSPs are converted into TSPs by creating a
+distance matrix and then solved. Note: distance matrices can become
+very large leading to long memory issues and long computation times.
 }
+
 \examples{
 
 ## solve a simple Euclidean TSP (using the default method)
@@ -189,7 +228,7 @@ data("USCA50")
 USCA50
 methods <- c("identity", "random", "nearest_insertion",
   "cheapest_insertion", "farthest_insertion", "arbitrary_insertion",
-  "nn", "repetitive_nn", "two_opt")
+  "nn", "repetitive_nn", "two_opt", "sa")
 
 ## calculate tours
 tours <- lapply(methods, FUN = function(m) solve_TSP(USCA50, method = m))
@@ -226,21 +265,26 @@ dotchart(tour_lengths / opt * 100 - 100, xlab = "percent excess over optimum")
 David Applegate, Robert Bixby, Vasek Chvatal, William Cook
 (2001): TSP cuts which do not conform to the template paradigm,
 Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
-Springer.
+Springer.\doi{10.1007/3-540-45586-8_7}
 
 D. Applegate, W. Cook and A. Rohe (2003): Chained Lin-Kernighan for Large
-Traveling Salesman Problems.  \emph{INFORMS Journal on Computing,
-15(1):82--92.}
+Traveling Salesman Problems.  \emph{INFORMS Journal on Computing},
+15(1):82--92. \doi{10.1287/ijoc.15.1.82.15157}
 
 G.A. Croes (1958): A method for solving traveling-salesman problems.
-\emph{Operations Research, 6(6):791--812.}
+\emph{Operations Research}, 6(6):791--812. \doi{10.1287/opre.6.6.791}
+
+Kirkpatrick, S., C. D. Gelatt, and M. P. Vecchi (1983):
+Optimization by Simulated Annealing. \emph{Science} 220 (4598): 671–80
+\doi{10.1126/science.220.4598.671}
 
 S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
-traveling-salesman problem. \emph{Operations Research, 21(2): 498--516.}
+traveling-salesman problem. \emph{Operations Research}, 21(2): 498--516.
+\doi{10.1287/opre.21.2.498}
 
 D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis
 of several heuristics for the traveling salesman problem.  \emph{SIAM
-Journal on Computing, 6(3):563--581.}
+Journal on Computing}, 6(3):563--581. \doi{10.1007/978-1-4020-9688-4_3}
 }
 \seealso{
 Other TSP: 

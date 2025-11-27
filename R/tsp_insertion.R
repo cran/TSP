@@ -24,8 +24,8 @@
 tsp_insertion <- function(x, type = "nearest", control = NULL){
 
   ## since sample has an annoying convenience feature for
-  ## lenght(x) == 1
-  choose1 <- function(x) if(length(x) > 1) sample(x, 1) else x
+  ## length(x) == 1
+  choose1 <- function(x) if(length(x) > 1L) sample(x, 1L) else x
 
   ## this is slower than which.min and which.max but works also
   ## correctly for only values Inf in x and breaks ties randomly
@@ -45,7 +45,8 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
 
   ## place first city
   control <- .get_parameters(control, list(
-      start = sample(n, 1)
+      start = sample(n, 1),
+      verbose = FALSE
     ), method = paste0(types[type_num], "_insertion"))
   start <- as.integer(control$start)
   if(start < 0 || start > n)
@@ -54,7 +55,7 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
   placed <- logical(n)
   placed[start] <- TRUE
   order <- c(start)
-
+  
   ## place other cities
   while(any(placed == FALSE)) {
 
@@ -62,18 +63,20 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
     ks <- which(!placed)
     js <- which(placed)
 
+    if (control$verbose && length(js) %% 100 == 0) 
+      cat("\r", "Placed: ", length(js), "/", length(placed), sep = "")
+    
     ## nearest / farthest
     if(type_num < 3) {
       m <- x[ks,js, drop = FALSE]
-
+      
       ## for the asymmetric case we have to take distances
       ## from and to the city into account
       if(asym){
         m <- cbind(m, t(x)[ks,js, drop = FALSE])
       }
 
-      ds <- sapply(1:length(ks), FUN =
-          function(i)  min(m[i, , drop = FALSE]))
+      ds <- apply(m, MARGIN = 1, min)
 
       ## nearest/farthest insertion
       winner_index <- if(type_num == 1) choose1_min(ds)
@@ -110,7 +113,7 @@ tsp_insertion <- function(x, type = "nearest", control = NULL){
   }
 
   if (control$verbose)
-    cat("All cities placed.\n\n")
+    cat("\nAll cities placed.\n\n")
 
   order
 }
@@ -146,10 +149,13 @@ tsp_insertion_arbitrary <- function(x, control = NULL){
     pos <- which.min(.Call(R_insertion_cost, x, order[1:(i-1L)], i)) + 1L
     order[((pos):i)+1L] <- order[(pos):i]
     order[pos] <- i
+    if (control$verbose && i %% 100 == 0) {
+          cat("\r", "Placed: ", i, "/", length(order), sep = "")
+    }
   }
 
   if (control$verbose)
-    cat("All cities placed.\n\n")
+    cat("\nAll cities placed.\n\n")
 
   rorder[order]
 }

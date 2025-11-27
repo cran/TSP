@@ -28,12 +28,12 @@
 #' reformulated as larger TSP's and then solved.
 #'
 #'
-#' **Installation of Concorde**
+#' # Installation of Concorde
 #'
 #' The Concorde TSP Solver is freely available for academic research.
 #' It is not included in the \pkg{TSP} R package and has
 #' to be obtained separately from the
-#' [Concorde download page](http://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm).
+#' [Concorde download page](https://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm).
 #' Either download the precompiled executables and place them in a suitable
 #' directory (make sure they are executable), or you can get the source code and
 #' compile the program on your own. \pkg{TSP} needs to know where the executables are.
@@ -44,7 +44,7 @@
 #'   sure that the executables are in the search path stored in the `PATH`
 #'   environment variable (see [Sys.setenv()]).
 #'
-#' **Using Concorde for `solve_TSP()`**
+#' # Using Concorde for `solve_TSP()`
 #'
 #' [solve_TSP()] uses [write_TSPLIB()] to write the TSP for
 #' Concorde and tries to find the appropriate `precision` value (digits
@@ -61,8 +61,10 @@
 #' \option{-N}, \option{-Q}) are not available via [solve_TSP()] since they
 #' are used by the interface.
 #'
-#' If Concorde takes too long, then you can kill the 'concorde' process via your
-#' operating system and you can continue with R.
+#' If Concorde takes too long, then you can interrupt [solve_TSP()] 
+#' using `Esc/CTRL-C`. On most operating systems, this will also
+#' terminate the Concorde executable. If Concorde keeps running, then you can 
+#' kill the 'concorde' process via your operating system.
 #'
 #' @family TSP
 #'
@@ -71,10 +73,10 @@
 #'
 #' @param path a character string with the path to the directory where the
 #' executables are installed.
-#' @returns Nothing.
+#' @returns `concorde_path()` returns the path to the executable. Others functions: Nothing.
 #' @author Michael Hahsler
 #' @references Concorde home page,
-#' \url{http://www.math.uwaterloo.ca/tsp/concorde/}
+#' \url{https://www.math.uwaterloo.ca/tsp/concorde/}
 #'
 #' David Applegate, Robert Bixby, Vasek Chvatal, William Cook (2001): TSP cuts
 #' which do not conform to the template paradigm, Computational Combinatorial
@@ -99,7 +101,8 @@
 #'
 #' data("USCA312")
 #'
-#' ## run concorde in verbose mode (-v) with fast cuts only (-V)
+#' ## run Concorde in verbose mode (-v) with fast cuts only (-V)
+#' ## Note: use the contol parameter verbose = FALSE to supress Concorde's output
 #' solve_TSP(USCA312, method = "concorde", control = list(clo = "-v -V"))
 #' }
 #'
@@ -124,7 +127,9 @@ NULL
   max_x <- max(x)
   prec <- floor(log10(MAX / max_x))
   if (any((x %% 1) != 0) || prec < 0) {
-    if (prec < precision) {
+    if (prec >= precision) {
+      x <- x * 10 ^ precision
+    } else {
       warning(
         paste0(
           "Concorde/Linken can only handle distances represented as integers. Converting the provided distances to integers with precison ",
@@ -134,7 +139,7 @@ NULL
         immediate. = TRUE
       )
       x <- x * 10 ^ prec
-    }
+    } 
   }
 
   storage.mode(x) <-
@@ -181,7 +186,7 @@ tsp_concorde <- function(x, control = NULL) {
   ## check x
   if (inherits(x, "TSP")) {
     #if(n_of_cities(x) < 10) MAX <- 2^15 - 1 else MAX <- 2^31 - 1
-    ### MFH: concorde may overflow with 2^31-1
+    ### MFH: Concorde may overflow with 2^31-1
     if (n_of_cities(x) < 10)
       MAX <- 2 ^ 15 - 1
     else

@@ -1,6 +1,6 @@
 #######################################################################
 # TSP - Traveling Salesperson Problem
-# Copyrigth (C) 2011 Michael Hahsler and Kurt Hornik
+# Copyright (C) 2011 Michael Hahsler and Kurt Hornik
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #'
 #' Common interface to all TSP solvers in this package.
 #'
-#' **TSP Methods**
+#' # TSP Methods
 #'
 #' Currently the following methods are available:
-#' - "identity", "random" return a tour representing the order in the data
+#' - __"identity", "random"__ return a tour representing the order in the data
 #'   (identity order) or a random order. \[TSP, ATSP\]
 #'
-#' - "nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"
+#' - __"nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"__
 #'   Nearest, farthest, cheapest and
 #'   arbitrary insertion algorithms for a symmetric and asymmetric TSP
 #'   (Rosenkrantz et al. 1977). \[TSP, ATSP\]
@@ -58,7 +58,7 @@
 #'   Additional control options:
 #'   - "start" index of the first city (default: a random city).
 #'
-#' - "nn", "repetitive_nn" Nearest neighbor and repetitive
+#' - __"nn", "repetitive_nn"__ Nearest neighbor and repetitive
 #'   nearest neighbor algorithms for symmetric and asymmetric TSPs (Rosenkrantz
 #'   et al. 1977). \[TSP, ATSP\]
 #'
@@ -72,7 +72,30 @@
 #'   Additional control options:
 #'   - "start" index of the first city (default: a random city).
 #'
-#' - "two_opt" Two edge exchange improvement procedure (Croes 1958). \[TSP, ATSP\]
+#' - __"sa"__ Simulated Annealing for TSPs (Kirkpatrick et al, 1983) \[TSP, ATSP\]
+#'
+#'   A tour refinement method that uses simulated annealing with subtour 
+#'   reversal as local move. The used optimizer is
+#'   [stats::optim()] with method `"SANN"`. This method is 
+#'   typically a lot slower than `"two_opt"` and requires parameter tuning for the 
+#'   cooling schedule.
+#'
+#'   Additional control options:
+#'   - "tour" an existing tour which should be improved.
+#'     If no tour is given, a random tour is used.
+#'   - "local_move" a function that creates a local move with the current 
+#'      tour as the first and the TSP as the second parameter. Defaults to
+#'      randomized subtour reversal.
+#'   - "temp" initial temperature. Defaults to the length of the current tour divided
+#'      by the number of cities.
+#'   - "tmax" number of evaluations per temperature step. Default is 10.
+#'   - "maxit" number of evaluations. Default is 10000 for speed, but larger values 
+#'      will result in more competitive results.
+#'   - "trace" set to 1 to print progress. 
+#'   
+#'   See [stats::optim()] for more details on the parameters.
+#'   
+#' - __"two_opt"__ Two edge exchange improvement procedure (Croes 1958). \[TSP, ATSP\]
 #'
 #'   This is a tour refinement procedure which systematically exchanges two edges
 #'   in the graph represented by the distance matrix till no improvements are
@@ -88,7 +111,7 @@
 #'   - "two_opt_repetitions" number of times to try two_opt with a
 #'     different initial random tour (default: 1).
 #'
-#' - "concorde" Concorde algorithm (Applegate et al. 2001). \[TSP, ETSP\]
+#' - __"concorde"__ Concorde algorithm (Applegate et al. 2001). \[TSP, ETSP\]
 #'
 #'   Concorde is an advanced exact TSP solver for _symmetric_ TSPs
 #'   based on branch-and-cut.
@@ -111,8 +134,9 @@
 #'     \eqn{10^{precision}} (i.e., the decimal point has to be shifted
 #'     `precision` placed to the left). The interface to Concorde uses
 #'     [write_TSPLIB()].
+#'   - "verbose" logical; `FALSE` suppresses the output printed to the terminal.
 #'
-#' - "linkern" Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). \[TSP, ETSP\]
+#' - __"linkern"__ Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). \[TSP, ETSP\]
 #'
 #'   The Lin-Kernighan (Lin and Kernighan 1973) heuristic uses variable \eqn{k}
 #'   edge exchanges to improve an initial tour.  The program is not included in
@@ -120,7 +144,20 @@
 #'
 #'   Additional control options: see Concorde above.
 #'
-#' **Treatment of `NA`s and infinite values in `x`**
+#' # Verbose Operation
+#' 
+#' Most implementations provide verbose output to monitor progress using the 
+#' logical control parameter "verbose".
+#' 
+#' # Additional refinement and random restarts
+#' 
+#' Most constructive methods also accept the following extra control parameters:
+#' 
+#' * "two_opt": a logical indicating if two-opt refinement should be performed on the
+#'   constructed tour.
+#' * "rep": an integer indicating how many replications (random restarts) should be performed. 
+#'
+#' # Treatment of `NA`s and infinite values in `x`
 #'
 #' [TSP] and [ATSP] need to contain valid distances. `NA`s are not allowed. `Inf` is
 #' allowed and can be used to model the missing edges in incomplete graphs
@@ -131,7 +168,7 @@
 #' a path length of `Inf`. `-Inf` is replaced by \eqn{min(x) - 2 range(x)} and
 #' can be used to encourage the solver to place two objects next to each other.
 #'
-#' **Parallel execution support**
+#' # Parallel execution support
 #'
 #' All heuristics can be used with the control arguments `repetitions`
 #' (uses the best from that many repetitions with random starts) and
@@ -142,7 +179,7 @@
 #' appropriate parallel backend needs to be registered (e.g., load
 #' \pkg{doParallel} and register it with [doParallel::registerDoParallel()]).
 #'
-#' **Solving ATSP and ETSP**
+#' # Solving ATSP and ETSP
 #'
 #' Some solvers (including Concorde) cannot directly solve [ATSP]
 #' directly. `ATSP` can be reformulated as larger `TSP` and solved
@@ -150,9 +187,10 @@
 #' `as_TSP` which can be set to `TRUE` to automatically solve the
 #' `ATSP` reformulated as a `TSP` (see [reformulate_ATSP_as_TSP()]).
 #'
-#' Only methods "concorde" and "linkern" can solve [ETSP]s directly.
-#' For all other methods, ETSPs are currently converted into TSPs by creating a
-#' distance matrix and then solved.
+#' Only methods "concorde" and "linkern" currently solve [ETSP]s directly.
+#' For all other methods, ETSPs are converted into TSPs by creating a
+#' distance matrix and then solved. Note: distance matrices can become 
+#' very large leading to long memory issues and long computation times.
 #'
 #' @family TSP
 #' @family TOUR
@@ -170,21 +208,26 @@
 #' David Applegate, Robert Bixby, Vasek Chvatal, William Cook
 #' (2001): TSP cuts which do not conform to the template paradigm,
 #' Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
-#' Springer.
+#' Springer.\doi{10.1007/3-540-45586-8_7}
 #'
 #' D. Applegate, W. Cook and A. Rohe (2003): Chained Lin-Kernighan for Large
-#' Traveling Salesman Problems.  \emph{INFORMS Journal on Computing,
-#' 15(1):82--92.}
+#' Traveling Salesman Problems.  \emph{INFORMS Journal on Computing},
+#' 15(1):82--92. \doi{10.1287/ijoc.15.1.82.15157}
 #'
 #' G.A. Croes (1958): A method for solving traveling-salesman problems.
-#' \emph{Operations Research, 6(6):791--812.}
+#' \emph{Operations Research}, 6(6):791--812. \doi{10.1287/opre.6.6.791}
+#'
+#' Kirkpatrick, S., C. D. Gelatt, and M. P. Vecchi (1983): 
+#' Optimization by Simulated Annealing. \emph{Science} 220 (4598): 671–80
+#' \doi{10.1126/science.220.4598.671}
 #'
 #' S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
-#' traveling-salesman problem. \emph{Operations Research, 21(2): 498--516.}
+#' traveling-salesman problem. \emph{Operations Research}, 21(2): 498--516.
+#' \doi{10.1287/opre.21.2.498}
 #'
 #' D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis
 #' of several heuristics for the traveling salesman problem.  \emph{SIAM
-#' Journal on Computing, 6(3):563--581.}
+#' Journal on Computing}, 6(3):563--581. \doi{10.1007/978-1-4020-9688-4_3}
 #' @keywords optimize
 #' @examples
 #'
@@ -201,7 +244,7 @@
 #' USCA50
 #' methods <- c("identity", "random", "nearest_insertion",
 #'   "cheapest_insertion", "farthest_insertion", "arbitrary_insertion",
-#'   "nn", "repetitive_nn", "two_opt")
+#'   "nn", "repetitive_nn", "two_opt", "sa")
 #'
 #' ## calculate tours
 #' tours <- lapply(methods, FUN = function(m) solve_TSP(USCA50, method = m))
@@ -289,10 +332,18 @@ solve_TSP.ETSP <- function(x,
   method = NULL,
   control = NULL,
   ...) {
-  ## all but concorde and linkern can only do TSP
+  ## all but concorde and linkern can currently only do TSP
+  ## TODO: Implement insertion, NN, etc directly for ETSP to avoid creating 
+  ##       a large distance matrix
   m <- pmatch(tolower(method), c("concorde", "linkern"))
-  if (length(m) == 0L || is.na(m))
+  if (length(m) == 0L || is.na(m)) {
+    if (nrow(x) > 10000L)
+      warning("Convertion of ETSP to TSP creates a distance matrix of size O(n^2). ", 
+              "This operation may be slow or you may run out of memory. ",
+              "Currently, only \"concorde\" and \"linkern\" can directly work with ETSP.", 
+              immediate. = TRUE)
     x <- as.TSP(x)
+  }
 
   .solve_TSP(x, method, control, ...)
 }
@@ -345,17 +396,24 @@ solve_TSP.ETSP <- function(x,
     "2-opt",
     "two_opt",
     "concorde",
-    "linkern"
+    "linkern",
+    "sa"
   )
 
   ## default is arbitrary_insertion + two_opt
   if (is.null(method)) {
     method <- "arbitrary_insertion"
-    if (is.null(control[["two_opt"]]))
-      control <- c(control, list(two_opt = TRUE))
+    control$two_opt <- TRUE
   } else
     method <- match.arg(tolower(method), methods)
-
+    
+  ## no rep or two_opt for these!
+  if (method == "concorde" || method == "linkern") {
+    if (control$rep %||% 1L > 1L || control$two_opt %||% FALSE)
+      warning("control parameters rep and two_opt not available for methods concorde and linkern and are ignored!")
+    control$rep <- NULL
+    control$two_opt <- NULL
+  }
 
   ## check for NAs
   if (any(is.na(x)))
@@ -380,9 +438,10 @@ solve_TSP.ETSP <- function(x,
       two_opt = tsp_two_opt(x_, control = control),
       '2-opt' = tsp_two_opt(x_, control = control),
       concorde = tsp_concorde(x_, control = control),
-      linkern = tsp_linkern(x_, control = control)
+      linkern = tsp_linkern(x_, control = control),
+      sa = tsp_SA(x_, control = control)
     )
-
+  
     ### do refinement two_opt
     if (!is.null(control[["two_opt"]]) && control[["two_opt"]]) {
       order <- tsp_two_opt(x_, control = c(control, list(tour = order)))
@@ -393,18 +452,9 @@ solve_TSP.ETSP <- function(x,
   }
 
   ## do rep?
-  if (!is.null(control$rep))
-    n <- control$rep
-  else
-    n <- 1L
+  n <- control$rep %||% 1L
 
-  ## no rep or two_opt for these!
-  if (method == "concorde" || method == "linkern") {
-    n <- 1L
-    control$two_opt <- NULL
-  }
-
-  ## no rep!
+  ## reps are handled internally!
   if (method == "repetitive_nn")
     n <- 1L
 
