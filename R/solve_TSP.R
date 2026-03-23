@@ -22,7 +22,31 @@
 #'
 #' # TSP Methods
 #'
-#' Currently the following methods are available:
+#' TSP supports tour construction methods, tour improvement heuristics and 
+#' an interface to Concorde (a state-of-the-art external solver).
+#' Tour construction methods create a tour from scratch, typically using a 
+#' construction heuristic. Tour improvement heuristics take an existing tour and
+#' try to improve it. If no initial tour is provided for the improvement 
+#' heuristic, then an initial tour (e.g., a random tour) are automatically created.
+#' 
+#' Most heuristic methods accept the following extra control parameters in addition
+#' the parameters specified below:
+#'
+#' * "rep": an integer indicating how many replications (random restarts) should be performed.
+#'  The best result is returned. The replications can be performed in parallel 
+#'  (see Section Parallel Execution Support). 
+#' * "two_opt": a logical indicating if two-opt refinement should be performed on the
+#'   constructed tour. This is just for convenience so a constructive heuristic can be
+#'   followed by two-opt refinement in a single call.
+#' * "verbose": a logical. Most implementations provide verbose output to monitor progress.
+#'   This argument can also be helpful to see what heuristics are used and what the
+#'   default parameters are.
+#'
+#' ## Tour Construction Methods
+#' 
+#' These methods construct tours from scratch. 
+#' The available tour construction methods are:
+#'
 #' - __"identity", "random"__ return a tour representing the order in the data
 #'   (identity order) or a random order. \[TSP, ATSP\]
 #'
@@ -72,6 +96,13 @@
 #'   Additional control options:
 #'   - "start" index of the first city (default: a random city).
 #'
+#' ## Tour Improvement Heuristics
+#'
+#' Tour improvement methods take a tour as the argument `tour` and try to improve the 
+#' tour. If no tour is provided. A random tour is used as the initial tour.
+#' 
+#' The following tour improvement heuristics are available:
+#'
 #' - __"sa"__ Simulated Annealing for TSPs (Kirkpatrick et al, 1983) \[TSP, ATSP\]
 #'
 #'   A tour refinement method that uses simulated annealing with subtour 
@@ -79,6 +110,9 @@
 #'   [stats::optim()] with method `"SANN"`. This method is 
 #'   typically a lot slower than `"two_opt"` and requires parameter tuning for the 
 #'   cooling schedule.
+#'   
+#'   __Note:__ For speed, a relatively small number of evaluations (`maxit`) is 
+#'   used by default. A much larger value will result in more competitive results.
 #'
 #'   Additional control options:
 #'   - "tour" an existing tour which should be improved.
@@ -89,8 +123,7 @@
 #'   - "temp" initial temperature. Defaults to the length of the current tour divided
 #'      by the number of cities.
 #'   - "tmax" number of evaluations per temperature step. Default is 10.
-#'   - "maxit" number of evaluations. Default is 10000 for speed, but larger values 
-#'      will result in more competitive results.
+#'   - "maxit" number of evaluations. Default is 10000.
 #'   - "trace" set to 1 to print progress. 
 #'   
 #'   See [stats::optim()] for more details on the parameters.
@@ -102,14 +135,13 @@
 #'   possible. Exchanging two edges is equal to reversing part of the tour. The
 #'   resulting tour is called _2-optimal._
 #'
-#'   This method can be applied to tours created by other methods or used as its
-#'   own method. In this case improvement starts with a random tour.
-#'
 #'   Additional control options:
 #'   - "tour" an existing tour which should be improved.
 #'     If no tour is given, a random tour is used.
-#'   - "two_opt_repetitions" number of times to try two_opt with a
-#'     different initial random tour (default: 1).
+#'   - "two_opt_repetitions" number of times to try with random restarts 
+#'    (default: 1).
+#'
+#'  ## State-of-the-art Solvers Interfaces
 #'
 #' - __"concorde"__ Concorde algorithm (Applegate et al. 2001). \[TSP, ETSP\]
 #'
@@ -144,20 +176,15 @@
 #'
 #'   Additional control options: see Concorde above.
 #'
-#' # Verbose Operation
-#' 
-#' Most implementations provide verbose output to monitor progress using the 
-#' logical control parameter "verbose".
-#' 
-#' # Additional refinement and random restarts
-#' 
-#' Most constructive methods also accept the following extra control parameters:
-#' 
-#' * "two_opt": a logical indicating if two-opt refinement should be performed on the
-#'   constructed tour.
-#' * "rep": an integer indicating how many replications (random restarts) should be performed. 
+#' # Parallel Execution Support
 #'
-#' # Treatment of `NA`s and infinite values in `x`
+#' If several repetitions are performed (this includes method
+#' `"repetitive_nn"`) then \pkg{foreach} is used so they can be performed
+#' in parallel on multiple cores/machines. To enable parallel execution an
+#' appropriate parallel backend needs to be registered 
+#' (e.g., [doParallel::registerDoParallel()]).
+#' 
+#' # Treatment of `NA`s and Infinite Values in `x`
 #'
 #' [TSP] and [ATSP] need to contain valid distances. `NA`s are not allowed. `Inf` is
 #' allowed and can be used to model the missing edges in incomplete graphs
@@ -167,17 +194,6 @@
 #' (e.g., if `x` contains several unconnected subgraphs) which results in
 #' a path length of `Inf`. `-Inf` is replaced by \eqn{min(x) - 2 range(x)} and
 #' can be used to encourage the solver to place two objects next to each other.
-#'
-#' # Parallel execution support
-#'
-#' All heuristics can be used with the control arguments `repetitions`
-#' (uses the best from that many repetitions with random starts) and
-#' `two_opt` (a logical indicating if two_opt refinement should be
-#' performed). If several repetitions are done (this includes method
-#' `"repetitive_nn"`) then \pkg{foreach} is used so they can be performed
-#' in parallel on multiple cores/machines. To enable parallel execution an
-#' appropriate parallel backend needs to be registered (e.g., load
-#' \pkg{doParallel} and register it with [doParallel::registerDoParallel()]).
 #'
 #' # Solving ATSP and ETSP
 #'
@@ -196,8 +212,8 @@
 #' @family TOUR
 #'
 #' @param x a TSP problem.
-#' @param method method to solve the TSP (default: "arbitrary insertion"
-#' algorithm with two_opt refinement.
+#' @param method method to solve the TSP (default: "arbitrary insertion" 
+#' construction followed by the "two_opt" improvement heuristic.
 #' @param control a list of arguments passed on to the TSP solver selected by
 #' `method`.
 #' @param as_TSP should the ATSP reformulated as a TSP for the solver?
@@ -238,6 +254,13 @@
 #' tour_length(tour)
 #' plot(etsp, tour)
 #'
+#' ## manually run a construction followed by an improvement heuristic by 
+#' ## calling solve_TSP() twice.
+#' tour_constr <- solve_TSP(etsp, method = "nn")
+#' tour_constr
+#' 
+#' tour_improved <- solve_TSP(etsp, method = "sa", tour = tour_constr)
+#' tour_improved
 #'
 #' ## compare methods
 #' data("USCA50")
@@ -273,9 +296,9 @@
 #'
 #' ## compare tour lengths
 #' opt <- 14497 # obtained by Concorde
-#' tour_lengths <- c(sort(sapply(tours, tour_length), decreasing = TRUE),
-#'   optimal = opt)
+#' tour_lengths <- sort(sapply(tours, tour_length), decreasing = TRUE)
 #' dotchart(tour_lengths / opt * 100 - 100, xlab = "percent excess over optimum")
+#' abline(v = 0, col = "red")
 #' @export
 solve_TSP <- function(x,
   method = NULL,

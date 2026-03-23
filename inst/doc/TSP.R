@@ -1,7 +1,7 @@
 ### R code from vignette source 'TSP.Rnw'
 
 ###################################################
-### code chunk number 1: TSP.Rnw:81-84
+### code chunk number 1: TSP.Rnw:80-83
 ###################################################
 options(width = 75, useFancyQuotes=FALSE, prompt="R> ")
 ### for sampling
@@ -9,7 +9,7 @@ set.seed(1234)
 
 
 ###################################################
-### code chunk number 2: TSP.Rnw:645-648
+### code chunk number 2: TSP.Rnw:644-647
 ###################################################
 library("TSP")
 data("USCA50")
@@ -17,7 +17,7 @@ USCA50
 
 
 ###################################################
-### code chunk number 3: TSP.Rnw:661-662
+### code chunk number 3: TSP.Rnw:660-661
 ###################################################
 set.seed(1234)
 
@@ -39,13 +39,13 @@ xlab = "tour length", xlim = c(0, 20000))
 
 
 ###################################################
-### code chunk number 5: TSP.Rnw:703-704
+### code chunk number 5: TSP.Rnw:702-703
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 6: TSP.Rnw:707-711
+### code chunk number 6: TSP.Rnw:706-710
 ###################################################
 library("TSP")
 data("USCA312")
@@ -54,14 +54,14 @@ tsp
 
 
 ###################################################
-### code chunk number 7: TSP.Rnw:717-719
+### code chunk number 7: TSP.Rnw:716-718
 ###################################################
 tour <- solve_TSP(tsp, method="farthest_insertion")
 tour
 
 
 ###################################################
-### code chunk number 8: TSP.Rnw:728-731
+### code chunk number 8: TSP.Rnw:727-730
 ###################################################
 path <- cut_tour(tour, "cut")
 head(labels(path))
@@ -92,13 +92,13 @@ if(require(maps)) {
 
 
 ###################################################
-### code chunk number 10: TSP.Rnw:792-793
+### code chunk number 10: TSP.Rnw:791-792
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 11: TSP.Rnw:796-807
+### code chunk number 11: TSP.Rnw:795-806
 ###################################################
 atsp <- as.ATSP(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -120,27 +120,27 @@ plot_path(path)
 
 
 ###################################################
-### code chunk number 13: TSP.Rnw:831-833
+### code chunk number 13: TSP.Rnw:830-832
 ###################################################
 tsp <- reformulate_ATSP_as_TSP(atsp)
 tsp
 
 
 ###################################################
-### code chunk number 14: TSP.Rnw:845-847 (eval = FALSE)
+### code chunk number 14: TSP.Rnw:844-846 (eval = FALSE)
 ###################################################
 ## tour <- solve_TSP(tsp, method = "concorde")
 ## tour <- as.TOUR(tour[tour <= n_of_cities(atsp)])
 
 
 ###################################################
-### code chunk number 15: TSP.Rnw:869-870
+### code chunk number 15: TSP.Rnw:868-869
 ###################################################
 set.seed(1234)
 
 
 ###################################################
-### code chunk number 16: TSP.Rnw:873-883
+### code chunk number 16: TSP.Rnw:872-882
 ###################################################
 m <- as.matrix(USCA312)
 ny <- which(labels(USCA312) == "New York, NY")
@@ -155,7 +155,7 @@ atsp[, la_ny] <- c(m[la, -c(ny,la)], 0)
 
 
 ###################################################
-### code chunk number 17: TSP.Rnw:888-897
+### code chunk number 17: TSP.Rnw:887-896
 ###################################################
 tour <- solve_TSP(atsp, method ="nearest_insertion")
 tour
@@ -175,13 +175,13 @@ plot_path(path_ids)
 
 
 ###################################################
-### code chunk number 19: TSP.Rnw:941-942
+### code chunk number 19: TSP.Rnw:940-941
 ###################################################
 set.seed(4444)
 
 
 ###################################################
-### code chunk number 20: TSP.Rnw:944-948
+### code chunk number 20: TSP.Rnw:943-947
 ###################################################
 data("iris")
 tsp <- TSP(dist(iris[-5]), labels = iris[, "Species"])
@@ -201,7 +201,7 @@ abline(v = which(labels(tour)=="boundary"), col = "red")
 
 
 ###################################################
-### code chunk number 22: TSP.Rnw:986-990
+### code chunk number 22: TSP.Rnw:985-989
 ###################################################
 out <- rle(labels(tour))
 data.frame(Species = out$values,

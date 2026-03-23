@@ -1,8 +1,8 @@
 Package: TSP
 Type: Package
 Title: Infrastructure for the Traveling Salesperson Problem
-Version: 1.2.6
-Date: 2025-11-26
+Version: 1.2.7
+Date: 2026-03-22
 Authors@R: 
   c(person("Michael", "Hahsler", 
     role = c("aut", "cre", "cph"),
@@ -30,10 +30,10 @@ RoxygenNote: 7.3.3
 License: GPL-3
 Copyright: All code is Copyright (C) Michael Hahsler and Kurt Hornik.
 NeedsCompilation: yes
-Packaged: 2025-11-26 19:13:31 UTC; mhahsler
+Packaged: 2026-03-22 19:06:40 UTC; mhahsler
 Author: Michael Hahsler [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0003-2716-1405>),
   Kurt Hornik [aut, cph] (ORCID: <https://orcid.org/0000-0003-4198-9911>)
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Repository: CRAN
-Date/Publication: 2025-11-27 06:10:33 UTC
+Date/Publication: 2026-03-23 06:40:20 UTC

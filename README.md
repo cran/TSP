@@ -11,29 +11,32 @@ status](https://mhahsler.r-universe.dev/badges/TSP)](https://mhahsler.r-universe
 
 ## Introduction
 
-The TSP package (Hahsler and Hornik 2007) provides the basic
-infrastructure and some algorithms for the traveling salesman problems
-(symmetric, asymmetric and Euclidean TSPs). The package provides some
-fast implementations of simple algorithms including:
+The TSP package ([Hahsler and Hornik 2007](#ref-Hahsler+Hornik2007))
+provides the basic infrastructure and some algorithms for the traveling
+salesman problems (symmetric, asymmetric and Euclidean TSPs). The
+package provides some fast implementations of simple algorithms
+including:
 
-- Tour construction heuristics
-  - **insertion algorithms**: nearest insertion, farthest insertion,
-    cheapest insertion, arbitrary insertion (Rosenkrantz, Stearns, and
-    Philip M. Lewis 1977)
-  - **nearest neighbor methods**: Nearest neighbor and repetitive
-    nearest neighbor (Rosenkrantz, Stearns, and Philip M. Lewis 1977)
-- Improvement methods
-  - **two-opt heuristic** (Croes 1958)
-  - **simulated annealing** (Kirkpatrick, Gelatt, and Vecchi 1983)
-- State-of-the-art solver
-  - An interface to the **Concorde TSP solver** (Applegate et al.
-    2000, 2006) and its implementation of the **Chained-Lin-Kernighan
-    heuristic** (Applegate, Cook, and Rohe 2003) is provided (needs to
-    be installed separately).
+- **Tour construction heuristics**
+  - **Insertion algorithms**: nearest insertion, farthest insertion,
+    cheapest insertion, arbitrary insertion ([Rosenkrantz, Stearns, and
+    Philip M. Lewis 1977](#ref-Rosenkrantz1977))
+  - **Nearest neighbor methods**: Nearest neighbor and repetitive
+    nearest neighbor ([Rosenkrantz, Stearns, and Philip M. Lewis
+    1977](#ref-Rosenkrantz1977))
+- **Tour improvement methods**
+  - **Two-opt heuristic** ([Croes 1958](#ref-Croes1958))
+  - **Simulated annealing** ([Kirkpatrick, Gelatt, and Vecchi
+    1983](#ref-Kirkpatrick1983))
+- **State-of-the-art solver interfaces**
+  - **Concorde TSP solver interface** ([Applegate et al.
+    2000](#ref-Applegate2000), [2006](#ref-Applegate2006))
+  - **Concorde Chained-Lin-Kernighan heuristic interface** ([Applegate,
+    Cook, and Rohe 2003](#ref-Applegate2003))
 
-The package can read and write the TSPLIB format (Reinelt 1991) and it
-can solve many of the problems in the [TSPLIB95 problem library (local
-copy of the
+The package can read and write the TSPLIB format ([Reinelt
+1991](#ref-Reinelt1991)) and it can solve many of the problems in the
+[TSPLIB95 problem library (local copy of the
 archive)](https://github.com/mhahsler/TSP/tree/master/TSPLIB95).
 
 The following R packages use `TSP`:
@@ -119,7 +122,7 @@ tour
 
     ## object of class 'TOUR' 
     ## result of method 'arbitrary_insertion+two_opt' for 312 cities
-    ## tour length: 41941
+    ## tour length: 40653
 
 Show the first few cities in the tour.
 
@@ -127,12 +130,12 @@ Show the first few cities in the tour.
 head(tour, n = 10)
 ```
 
-    ## Winston-Salem, NC     Charlotte, NC     Asheville, NC    Greenville, SC 
-    ##               306                54                10               110 
-    ##   Spartanburg, NC       Augusta, GA      Columbia, SC    Charleston, SC 
-    ##               260                14                64                52 
-    ##      Savannah, GA  Jacksonville, FL 
-    ##               250               127
+    ## Daytona Beach, FL  Jacksonville, FL      Columbus, GA       Atlanta, GA 
+    ##                72               127                65                12 
+    ##         Macon, GA       Augusta, GA      Savannah, GA    Charleston, SC 
+    ##               157                14               250                52 
+    ##      Columbia, SC    Wilmington, NC 
+    ##                64               303
 
 Visualize the complete tour.
 
@@ -198,7 +201,7 @@ Croes, G. A. 1958. “A Method for Solving Traveling-Salesman Problems.”
 
 </div>
 
-<div id="ref-TSP:Hahsler+Hornik2007" class="csl-entry">
+<div id="ref-Hahsler+Hornik2007" class="csl-entry">
 
 Hahsler, Michael, and Kurt Hornik. 2007. “TSP – Infrastructure for the
 Traveling Salesperson Problem.” *Journal of Statistical Software* 23

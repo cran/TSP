@@ -1,3 +1,8 @@
+# TSP 1.2.7 (03/22/2026)
+* Improved verbose output for method "sa."
+* Improved man page for solve_TSP (suggested by Henrik Bengtsson).
+* Added TSPLIB support for formats GEO and ATT (by Benjamin Schwedinger).
+
 # TSP 1.2.6 (11/26/2025)
 * Added method sa for simulated annealing.
 * Unknown parameters now create warnings.

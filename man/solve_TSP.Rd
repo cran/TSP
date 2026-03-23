@@ -19,7 +19,7 @@ solve_TSP(x, method = NULL, control = NULL, ...)
 \item{x}{a TSP problem.}
 
 \item{method}{method to solve the TSP (default: "arbitrary insertion"
-algorithm with two_opt refinement.}
+construction followed by the "two_opt" improvement heuristic.}
 
 \item{control}{a list of arguments passed on to the TSP solver selected by
 \code{method}.}
@@ -35,7 +35,30 @@ An object of class \link{TOUR}.
 Common interface to all TSP solvers in this package.
 }
 \section{TSP Methods}{
-Currently the following methods are available:
+TSP supports tour construction methods, tour improvement heuristics and
+an interface to Concorde (a state-of-the-art external solver).
+Tour construction methods create a tour from scratch, typically using a
+construction heuristic. Tour improvement heuristics take an existing tour and
+try to improve it. If no initial tour is provided for the improvement
+heuristic, then an initial tour (e.g., a random tour) are automatically created.
+
+Most heuristic methods accept the following extra control parameters in addition
+the parameters specified below:
+\itemize{
+\item "rep": an integer indicating how many replications (random restarts) should be performed.
+The best result is returned. The replications can be performed in parallel
+(see Section Parallel Execution Support).
+\item "two_opt": a logical indicating if two-opt refinement should be performed on the
+constructed tour. This is just for convenience so a constructive heuristic can be
+followed by two-opt refinement in a single call.
+\item "verbose": a logical. Most implementations provide verbose output to monitor progress.
+This argument can also be helpful to see what heuristics are used and what the
+default parameters are.
+}
+\subsection{Tour Construction Methods}{
+
+These methods construct tours from scratch.
+The available tour construction methods are:
 \itemize{
 \item \strong{"identity", "random"} return a tour representing the order in the data
 (identity order) or a random order. [TSP, ATSP]
@@ -87,6 +110,16 @@ Additional control options:
 \itemize{
 \item "start" index of the first city (default: a random city).
 }
+}
+}
+
+\subsection{Tour Improvement Heuristics}{
+
+Tour improvement methods take a tour as the argument \code{tour} and try to improve the
+tour. If no tour is provided. A random tour is used as the initial tour.
+
+The following tour improvement heuristics are available:
+\itemize{
 \item \strong{"sa"} Simulated Annealing for TSPs (Kirkpatrick et al, 1983) [TSP, ATSP]
 
 A tour refinement method that uses simulated annealing with subtour
@@ -94,6 +127,9 @@ reversal as local move. The used optimizer is
 \code{\link[stats:optim]{stats::optim()}} with method \code{"SANN"}. This method is
 typically a lot slower than \code{"two_opt"} and requires parameter tuning for the
 cooling schedule.
+
+\strong{Note:} For speed, a relatively small number of evaluations (\code{maxit}) is
+used by default. A much larger value will result in more competitive results.
 
 Additional control options:
 \itemize{
@@ -105,8 +141,7 @@ randomized subtour reversal.
 \item "temp" initial temperature. Defaults to the length of the current tour divided
 by the number of cities.
 \item "tmax" number of evaluations per temperature step. Default is 10.
-\item "maxit" number of evaluations. Default is 10000 for speed, but larger values
-will result in more competitive results.
+\item "maxit" number of evaluations. Default is 10000.
 \item "trace" set to 1 to print progress.
 }
 
@@ -118,16 +153,18 @@ in the graph represented by the distance matrix till no improvements are
 possible. Exchanging two edges is equal to reversing part of the tour. The
 resulting tour is called \emph{2-optimal.}
 
-This method can be applied to tours created by other methods or used as its
-own method. In this case improvement starts with a random tour.
-
 Additional control options:
 \itemize{
 \item "tour" an existing tour which should be improved.
 If no tour is given, a random tour is used.
-\item "two_opt_repetitions" number of times to try two_opt with a
-different initial random tour (default: 1).
+\item "two_opt_repetitions" number of times to try with random restarts
+(default: 1).
 }
+}
+}
+
+\subsection{State-of-the-art Solvers Interfaces}{
+\itemize{
 \item \strong{"concorde"} Concorde algorithm (Applegate et al. 2001). [TSP, ETSP]
 
 Concorde is an advanced exact TSP solver for \emph{symmetric} TSPs
@@ -163,22 +200,17 @@ this package and has to be obtained and installed separately (see \link{Concorde
 Additional control options: see Concorde above.
 }
 }
-
-\section{Verbose Operation}{
-Most implementations provide verbose output to monitor progress using the
-logical control parameter "verbose".
 }
 
-\section{Additional refinement and random restarts}{
-Most constructive methods also accept the following extra control parameters:
-\itemize{
-\item "two_opt": a logical indicating if two-opt refinement should be performed on the
-constructed tour.
-\item "rep": an integer indicating how many replications (random restarts) should be performed.
-}
+\section{Parallel Execution Support}{
+If several repetitions are performed (this includes method
+\code{"repetitive_nn"}) then \pkg{foreach} is used so they can be performed
+in parallel on multiple cores/machines. To enable parallel execution an
+appropriate parallel backend needs to be registered
+(e.g., \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}).
 }
 
-\section{Treatment of \code{NA}s and infinite values in \code{x}}{
+\section{Treatment of \code{NA}s and Infinite Values in \code{x}}{
 \link{TSP} and \link{ATSP} need to contain valid distances. \code{NA}s are not allowed. \code{Inf} is
 allowed and can be used to model the missing edges in incomplete graphs
 (i.e., the distance between the two objects is infinite) or infeasible connections.
@@ -187,17 +219,6 @@ Note that the solution might still place the two objects next to each other
 (e.g., if \code{x} contains several unconnected subgraphs) which results in
 a path length of \code{Inf}. \code{-Inf} is replaced by \eqn{min(x) - 2 range(x)} and
 can be used to encourage the solver to place two objects next to each other.
-}
-
-\section{Parallel execution support}{
-All heuristics can be used with the control arguments \code{repetitions}
-(uses the best from that many repetitions with random starts) and
-\code{two_opt} (a logical indicating if two_opt refinement should be
-performed). If several repetitions are done (this includes method
-\code{"repetitive_nn"}) then \pkg{foreach} is used so they can be performed
-in parallel on multiple cores/machines. To enable parallel execution an
-appropriate parallel backend needs to be registered (e.g., load
-\pkg{doParallel} and register it with \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}).
 }
 
 \section{Solving ATSP and ETSP}{
@@ -222,6 +243,13 @@ tour
 tour_length(tour)
 plot(etsp, tour)
 
+## manually run a construction followed by an improvement heuristic by 
+## calling solve_TSP() twice.
+tour_constr <- solve_TSP(etsp, method = "nn")
+tour_constr
+
+tour_improved <- solve_TSP(etsp, method = "sa", tour = tour_constr)
+tour_improved
 
 ## compare methods
 data("USCA50")
@@ -257,9 +285,9 @@ tours[[1]]
 
 ## compare tour lengths
 opt <- 14497 # obtained by Concorde
-tour_lengths <- c(sort(sapply(tours, tour_length), decreasing = TRUE),
-  optimal = opt)
+tour_lengths <- sort(sapply(tours, tour_length), decreasing = TRUE)
 dotchart(tour_lengths / opt * 100 - 100, xlab = "percent excess over optimum")
+abline(v = 0, col = "red")
 }
 \references{
 David Applegate, Robert Bixby, Vasek Chvatal, William Cook
