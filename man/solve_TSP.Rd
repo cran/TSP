@@ -19,7 +19,7 @@ solve_TSP(x, method = NULL, control = NULL, ...)
 \item{x}{a TSP problem.}
 
 \item{method}{method to solve the TSP (default: "arbitrary insertion"
-construction followed by the "two_opt" improvement heuristic.}
+construction followed by the "two_opt" improvement heuristic).}
 
 \item{control}{a list of arguments passed on to the TSP solver selected by
 \code{method}.}
@@ -40,17 +40,22 @@ an interface to Concorde (a state-of-the-art external solver).
 Tour construction methods create a tour from scratch, typically using a
 construction heuristic. Tour improvement heuristics take an existing tour and
 try to improve it. If no initial tour is provided for the improvement
-heuristic, then an initial tour (e.g., a random tour) are automatically created.
+heuristic, then an initial tour (e.g., a random tour) is automatically created.
 
 Most heuristic methods accept the following extra control parameters in addition
-the parameters specified below:
+to the parameters specified below:
 \itemize{
 \item "rep": an integer indicating how many replications (random restarts) should be performed.
 The best result is returned. The replications can be performed in parallel
 (see Section Parallel Execution Support).
-\item "two_opt": a logical indicating if two-opt refinement should be performed on the
-constructed tour. This is just for convenience so a constructive heuristic can be
-followed by two-opt refinement in a single call.
+\item "opt": a character string selecting a local-search refinement that is
+performed on the constructed tour. This is just for convenience so a
+constructive heuristic can be followed by refinement in a single call.
+Available values are \code{"two"} (2-opt), \code{"or"} (Or-opt), \code{"three"} (3-opt),
+and \code{"two+or"} (2-opt and Or-opt alternately until neither improves the
+tour). The default is no refinement. See the methods
+\code{"two_opt"}, \code{"or_opt"} and \code{"three_opt"} below.
+\item "two_opt": \strong{deprecated}. Use \code{opt = "two"} instead.
 \item "verbose": a logical. Most implementations provide verbose output to monitor progress.
 This argument can also be helpful to see what heuristics are used and what the
 default parameters are.
@@ -64,7 +69,7 @@ The available tour construction methods are:
 (identity order) or a random order. [TSP, ATSP]
 \item \strong{"nearest_insertion", "farthest_insertion", "cheapest_insertion", "arbitrary_insertion"}
 Nearest, farthest, cheapest and
-arbitrary insertion algorithms for a symmetric and asymmetric TSP
+arbitrary insertion algorithms for symmetric and asymmetric TSPs
 (Rosenkrantz et al. 1977). [TSP, ATSP]
 
 The distances between cities are stored in a distance matrix \eqn{D} with
@@ -72,13 +77,13 @@ elements \eqn{d(i,j)}.  All insertion algorithms start with a tour
 consisting of an arbitrary city and choose in each step a city \eqn{k} not
 yet on the tour. This city is inserted into the existing tour between two
 consecutive cities \eqn{i} and \eqn{j}, such that \deqn{d(i,k) + d(k,j) -
-  d(i,j)} is minimized. The algorithms stops when all cities are on the tour.
+  d(i,j)} is minimized. The algorithm stops when all cities are on the tour.
 
 The nearest insertion algorithm chooses city \eqn{k} in each step as the
 city which is \emph{nearest} to a city on the tour.
 
 For farthest insertion, the city \eqn{k} is chosen in each step as the city
-which is \emph{farthest} to any city on the tour.
+which is \emph{farthest} from any city on the tour.
 
 Cheapest insertion chooses the city \eqn{k} such that the cost of inserting
 the new city (i.e., the increase in the tour's length) is minimal.
@@ -86,9 +91,9 @@ the new city (i.e., the increase in the tour's length) is minimal.
 Arbitrary insertion chooses the city \eqn{k} randomly from all cities not
 yet on the tour.
 
-Nearest and cheapest insertion tries to build the tour using cities which
-fit well into the partial tour constructed so far.  The idea behind behind
-farthest insertion is to link cities far away into the tour fist to
+Nearest and cheapest insertion try to build the tour using cities that
+fit well into the partial tour constructed so far. The idea behind
+farthest insertion is to link distant cities into the tour first to
 establish an outline of the whole tour early.
 
 Additional control options:
@@ -116,14 +121,14 @@ Additional control options:
 \subsection{Tour Improvement Heuristics}{
 
 Tour improvement methods take a tour as the argument \code{tour} and try to improve the
-tour. If no tour is provided. A random tour is used as the initial tour.
+tour. If no tour is provided, a random tour is used as the initial tour.
 
 The following tour improvement heuristics are available:
 \itemize{
 \item \strong{"sa"} Simulated Annealing for TSPs (Kirkpatrick et al, 1983) [TSP, ATSP]
 
 A tour refinement method that uses simulated annealing with subtour
-reversal as local move. The used optimizer is
+reversal as a local move. The optimizer is
 \code{\link[stats:optim]{stats::optim()}} with method \code{"SANN"}. This method is
 typically a lot slower than \code{"two_opt"} and requires parameter tuning for the
 cooling schedule.
@@ -146,12 +151,12 @@ by the number of cities.
 }
 
 See \code{\link[stats:optim]{stats::optim()}} for more details on the parameters.
-\item \strong{"two_opt"} Two edge exchange improvement procedure (Croes 1958). [TSP, ATSP]
+\item \strong{"two_opt"} Two-edge exchange improvement procedure (Croes 1958). [TSP, ATSP]
 
 This is a tour refinement procedure which systematically exchanges two edges
-in the graph represented by the distance matrix till no improvements are
+in the graph represented by the distance matrix until no improvements are
 possible. Exchanging two edges is equal to reversing part of the tour. The
-resulting tour is called \emph{2-optimal.}
+resulting tour is called \emph{2-optimal.} This heuristic takes \eqn{O(n^2)} time.
 
 Additional control options:
 \itemize{
@@ -159,6 +164,38 @@ Additional control options:
 If no tour is given, a random tour is used.
 \item "two_opt_repetitions" number of times to try with random restarts
 (default: 1).
+}
+\item \strong{"or_opt"} Or-opt segment insertion (Or 1976). [TSP, ATSP]
+
+This is a tour refinement procedure which moves segments of 1 to
+\code{max_segment} consecutive cities to a better position in the tour until
+no improvement is possible. For symmetric problems, segments may also be
+reinserted in reverse order. Or-opt can move a misplaced city or small
+group of cities in a single step, which 2-opt cannot. It is often also
+used as an additional improvement step after "two_opt" (see Examples).
+This heuristic also takes \eqn{O(n^2)} time.
+
+Additional control options:
+\itemize{
+\item "tour" an existing tour which should be improved.
+If no tour is given, a random tour is used.
+\item "max_segment" maximum number of cities in a moved segment (default: 3).
+}
+\item \strong{"three_opt"} Three-edge exchange improvement procedure
+(Bock 1958; Lin 1965). [TSP, ATSP]
+
+This is a tour refinement procedure which removes three edges and
+reconnects the three resulting parts of the tour in the best possible way
+until no improvements are possible. The resulting tour is called
+\emph{3-optimal.} The search checks all triples of edges and each pass
+takes \eqn{O(n^3)} time, so it is only practical for small to medium
+problems. For ATSPs, only the reconnection that does not reverse any part
+of the tour is used.
+
+Additional control options:
+\itemize{
+\item "tour" an existing tour which should be improved.
+If no tour is given, a random tour is used.
 }
 }
 }
@@ -187,8 +224,15 @@ values given in \code{x} are multiplied by \eqn{10^{precision}} before being
 passed on to Concorde. Note that therefore the results produced by Concorde
 (especially lower and upper bounds) need to be divided by
 \eqn{10^{precision}} (i.e., the decimal point has to be shifted
-\code{precision} placed to the left). The interface to Concorde uses
+\code{precision} places to the left). The interface to Concorde uses
 \code{\link[=write_TSPLIB]{write_TSPLIB()}}.
+\item "seed" an optional whole number between 0 and \code{.Machine$integer.max}
+that is passed on to Concorde's \code{-s} option to make its randomized
+components reproducible. \strong{If no seed is specified, Concorde is still
+seeded:} one random number is drawn from R's random number generator
+and passed on as the seed. Therefore, calling \code{\link[=set.seed]{set.seed()}} before
+\code{solve_TSP()} also makes Concorde reproducible (see Section Reproducible
+Results). Do not combine \code{seed} with \code{-s} in \code{clo}.
 \item "verbose" logical; \code{FALSE} suppresses the output printed to the terminal.
 }
 \item \strong{"linkern"} Concorde's Chained Lin-Kernighan heuristic (Applegate et al. 2003). [TSP, ETSP]
@@ -197,17 +241,11 @@ The Lin-Kernighan (Lin and Kernighan 1973) heuristic uses variable \eqn{k}
 edge exchanges to improve an initial tour.  The program is not included in
 this package and has to be obtained and installed separately (see \link{Concorde}).
 
-Additional control options: see Concorde above.
+Additional control options: see Concorde above. This includes \code{seed}, which
+is passed on to linkern's \code{-s} option and is drawn from R's random number
+generator if it is not specified.
 }
 }
-}
-
-\section{Parallel Execution Support}{
-If several repetitions are performed (this includes method
-\code{"repetitive_nn"}) then \pkg{foreach} is used so they can be performed
-in parallel on multiple cores/machines. To enable parallel execution an
-appropriate parallel backend needs to be registered
-(e.g., \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}).
 }
 
 \section{Treatment of \code{NA}s and Infinite Values in \code{x}}{
@@ -222,8 +260,8 @@ can be used to encourage the solver to place two objects next to each other.
 }
 
 \section{Solving ATSP and ETSP}{
-Some solvers (including Concorde) cannot directly solve \link{ATSP}
-directly. \code{ATSP} can be reformulated as larger \code{TSP} and solved
+Some solvers (including Concorde) cannot solve \link{ATSP} directly.
+An \code{ATSP} can be reformulated as a larger \code{TSP} and solved
 this way. For convenience, \code{solve_TSP()} has an extra argument
 \code{as_TSP} which can be set to \code{TRUE} to automatically solve the
 \code{ATSP} reformulated as a \code{TSP} (see \code{\link[=reformulate_ATSP_as_TSP]{reformulate_ATSP_as_TSP()}}).
@@ -231,7 +269,36 @@ this way. For convenience, \code{solve_TSP()} has an extra argument
 Only methods "concorde" and "linkern" currently solve \link{ETSP}s directly.
 For all other methods, ETSPs are converted into TSPs by creating a
 distance matrix and then solved. Note: distance matrices can become
-very large leading to long memory issues and long computation times.
+very large, leading to high memory usage and long computation times.
+}
+
+\section{Parallel Execution Support}{
+If several repetitions are performed (this includes method
+\code{"repetitive_nn"}) then \pkg{foreach} is used so they can be performed
+in parallel on multiple cores/machines. To enable parallel execution an
+appropriate parallel backend needs to be registered
+(e.g., \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}).
+}
+
+\section{Reproducible Results}{
+All randomized methods implemented in this package (e.g., \code{"random"},
+\code{"nn"}, \code{"arbitrary_insertion"}, \code{"sa"}, and repetitions with \code{rep}) use
+R's global random number generator. Call \code{\link[=set.seed]{set.seed()}} before \code{solve_TSP()} to
+make the results reproducible, and note that every call advances the global
+random-number stream. If a parallel backend is used for repetitions
+(\code{rep > 1} and \code{"repetitive_nn"}), one random number
+per repetition is drawn from the global random number generator of the main
+R process and used as the seed of the iteration.
+
+Concorde and linkern are external programs with their own random number
+generators. The programs are seeded with with one random number is
+drawn from R's global random number generator. This means that
+\code{\link[=set.seed]{set.seed()}} also makes their results reproducible.
+In the unlikely evenet, that a specific seed value for these programs is needed,
+then it can be set via the control option \code{seed}
+(a whole number between 0 and \code{.Machine$integer.max}, e.g.,
+\code{control = list(seed = 1234)}), which is passed on to the program via its
+\code{-s} command line option.
 }
 
 \examples{
@@ -251,12 +318,19 @@ tour_constr
 tour_improved <- solve_TSP(etsp, method = "sa", tour = tour_constr)
 tour_improved
 
+## chain improvement heuristics: 2-opt, then Or-opt, then 3-opt
+tour_2 <- solve_TSP(etsp, method = "two_opt", tour = tour_constr)
+tour_or <- solve_TSP(etsp, method = "or_opt", tour = tour_2)
+tour_3 <- solve_TSP(etsp, method = "three_opt", tour = tour_or)
+c(nn = tour_length(tour_constr), two_opt = tour_length(tour_2),
+  or_opt = tour_length(tour_or), three_opt = tour_length(tour_3))
+
 ## compare methods
 data("USCA50")
 USCA50
 methods <- c("identity", "random", "nearest_insertion",
   "cheapest_insertion", "farthest_insertion", "arbitrary_insertion",
-  "nn", "repetitive_nn", "two_opt", "sa")
+  "nn", "repetitive_nn", "two_opt", "or_opt", "three_opt", "sa")
 
 ## calculate tours
 tours <- lapply(methods, FUN = function(m) solve_TSP(USCA50, method = m))
@@ -275,9 +349,10 @@ registerDoParallel()
 }
 
 ## add some tours using repetition and two_opt refinements
-tours$'nn+two_opt' <- solve_TSP(USCA50, method = "nn", two_opt = TRUE)
+tours$'nn+two_opt' <- solve_TSP(USCA50, method = "nn", opt = "two")
+tours$'nn+two_opt+or_opt' <- solve_TSP(USCA50, method = "nn", opt = "two+or")
 tours$'nn+rep_10' <- solve_TSP(USCA50, method = "nn", rep = 10)
-tours$'nn+two_opt+rep_10' <- solve_TSP(USCA50, method = "nn", two_opt = TRUE, rep = 10)
+tours$'nn+two_opt+rep_10' <- solve_TSP(USCA50, method = "nn", opt = "two", rep = 10)
 tours$'arbitrary_insertion+two_opt' <- solve_TSP(USCA50)
 
 ## show first tour
@@ -299,6 +374,10 @@ D. Applegate, W. Cook and A. Rohe (2003): Chained Lin-Kernighan for Large
 Traveling Salesman Problems.  \emph{INFORMS Journal on Computing},
 15(1):82--92. \doi{10.1287/ijoc.15.1.82.15157}
 
+F. Bock (1958): An algorithm for solving traveling-salesman and related
+network optimization problems. Unpublished manuscript presented at the 14th
+ORSA meeting, Saint Louis.
+
 G.A. Croes (1958): A method for solving traveling-salesman problems.
 \emph{Operations Research}, 6(6):791--812. \doi{10.1287/opre.6.6.791}
 
@@ -310,28 +389,24 @@ S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
 traveling-salesman problem. \emph{Operations Research}, 21(2): 498--516.
 \doi{10.1287/opre.21.2.498}
 
+S. Lin (1965): Computer solutions of the traveling salesman problem.
+\emph{Bell System Technical Journal}, 44(10):2245--2269.
+\doi{10.1002/j.1538-7305.1965.tb04146.x}
+
+I. Or (1976): Traveling salesman-type combinatorial problems and their
+relation to the logistics of regional blood banking. PhD thesis,
+Northwestern University, Evanston, IL.
+
 D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis
 of several heuristics for the traveling salesman problem.  \emph{SIAM
 Journal on Computing}, 6(3):563--581. \doi{10.1007/978-1-4020-9688-4_3}
 }
 \seealso{
-Other TSP: 
-\code{\link{ATSP}()},
-\code{\link{Concorde}},
-\code{\link{ETSP}()},
-\code{\link{TSP}()},
-\code{\link{TSPLIB}},
-\code{\link{insert_dummy}()},
-\code{\link{reformulate_ATSP_as_TSP}()}
-
-Other TOUR: 
-\code{\link{TOUR}()},
-\code{\link{cut_tour}()},
-\code{\link{tour_length}()}
+Other solver:
+\code{\link{Concorde}}
 }
 \author{
 Michael Hahsler
 }
-\concept{TOUR}
-\concept{TSP}
+\concept{solver}
 \keyword{optimize}

@@ -68,8 +68,8 @@ problem (TSP) and some auxiliary methods.
 Objects of class \code{TSP} are internally represented as \code{dist}
 objects (use \code{\link[=as.dist]{as.dist()}} to get the \code{dist} object).
 
-Not permissible paths can be set to a distance of \code{+Inf}. \code{NA}s are not allowed and \code{-Inf} will lead
-to the algorithm only being able to find an admissible tour, but not the best one.
+Impermissible paths can be set to a distance of \code{+Inf}. \code{NA}s are not allowed,
+and \code{-Inf} will allow the algorithm to find only an admissible tour, not the best one.
 }
 \examples{
 data("iris")
@@ -85,14 +85,11 @@ labels(tsp)
 image(tsp)
 }
 \seealso{
-Other TSP: 
-\code{\link{ATSP}()},
-\code{\link{Concorde}},
-\code{\link{ETSP}()},
-\code{\link{TSPLIB}},
-\code{\link{insert_dummy}()},
-\code{\link{reformulate_ATSP_as_TSP}()},
-\code{\link{solve_TSP}()}
+Other TSP:
+\code{\link[=ATSP]{ATSP()}},
+\code{\link[=ETSP]{ETSP()}},
+\code{\link[=insert_dummy]{insert_dummy()}},
+\code{\link[=reformulate_ATSP_as_TSP]{reformulate_ATSP_as_TSP()}}
 }
 \author{
 Michael Hahsler

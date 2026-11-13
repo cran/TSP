@@ -1,6 +1,6 @@
 #######################################################################
 # TSP - Traveling Salesperson Problem
-# Copyrigth (C) 2011 Michael Hahsler and Kurt Hornik
+# Copyright (C) 2011 Michael Hahsler and Kurt Hornik
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 #' Objects of class `TSP` are internally represented as `dist`
 #' objects (use [as.dist()] to get the `dist` object).
 #'
-#' Not permissible paths can be set to a distance of `+Inf`. `NA`s are not allowed and `-Inf` will lead
-#' to the algorithm only being able to find an admissible tour, but not the best one.
+#' Impermissible paths can be set to a distance of `+Inf`. `NA`s are not allowed,
+#' and `-Inf` will allow the algorithm to find only an admissible tour, not the best one.
 #'
 #' @family TSP
 #'
@@ -61,11 +61,20 @@
 #' image(tsp)
 #' @export
 TSP <- function(x, labels = NULL, method = NULL) {
-  if (inherits(x, "TSP"))
+  if (inherits(x, "TSP")) {
+    labels <- .validate_labels(labels, n_of_cities(x))
+    if (!is.null(labels))
+      attr(x, "Labels") <- labels
+    method <- .validate_method(method)
+    if (!is.null(method))
+      attr(x, "method") <- method
     return(x)
+  }
   x <- as.TSP(x)
+  labels <- .validate_labels(labels, n_of_cities(x))
   if (!is.null(labels))
     attr(x, "Labels") <- labels
+  method <- .validate_method(method)
   if (!is.null(method))
     attr(x, "method") <- method
   x
@@ -82,12 +91,13 @@ as.TSP <- function(x)
 as.TSP.dist <- function(x) {
   ## make sure we have a upper triangle matrix w/o diagonal
   x <- as.dist(x, diag = FALSE, upper = FALSE)
+  n <- attr(x, "Size")
 
   ## make sure we have labels
   if (is.null(attr(x, "Labels")))
-    attr(x, "Labels") <- c(1:n_of_cities(x))
+    attr(x, "Labels") <- seq_len(n)
 
-  if (any(is.nan(x)))
+  if (anyNA(x))
     stop(paste(sQuote("NAs"), "not supported"))
 
   ## make sure data is numeric
@@ -104,13 +114,14 @@ as.TSP.matrix <- function(x) {
 
   method <- attr(x, "method")
   x <- as.dist(x, diag = FALSE, upper = FALSE)
+  n <- attr(x, "Size")
   attr(x, "method") <- method
 
   ## make sure we have labels
   if (is.null(attr(x, "Labels")))
-    attr(x, "Labels") <- c(1:n_of_cities(x))
+    attr(x, "Labels") <- seq_len(n)
 
-  if (any(is.nan(x)))
+  if (anyNA(x))
     stop(paste(sQuote("NAs"), "not supported"))
 
   ## make sure data is numeric
@@ -158,7 +169,9 @@ n_of_cities.TSP <- function(x)
   attr(x, "Size")
 
 #' @export
-n_of_cities.default <- n_of_cities.TSP
+n_of_cities.default <- function(x)
+  stop("n_of_cities() is not defined for objects of class ",
+    paste(sQuote(class(x)), collapse = ", "), ".", call. = FALSE)
 
 ## labels
 #' @rdname TSP

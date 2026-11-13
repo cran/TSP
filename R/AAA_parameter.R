@@ -1,6 +1,6 @@
 #######################################################################
 # Code to check parameter/control objects
-# Copyrigth (C) 2011-2016 Michael Hahsler
+# Copyright (C) 2011-2016 Michael Hahsler
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,20 +24,110 @@
     paste(names(l), "=",l, collapse=", "))
 }
 
+.validate_city_index <- function(x, n, name = "start") {
+  if (!is.numeric(x) || length(x) != 1L || anyNA(x) ||
+      !is.finite(x) || x != floor(x) || x < 1L || x > n)
+    stop(name, " must be a single integer between 1 and ", n, ".",
+      call. = FALSE)
+
+  as.integer(x)
+}
+
+.validate_labels <- function(labels, n) {
+  if (!is.null(labels) && length(labels) != n)
+    stop("labels must have one value for each city.", call. = FALSE)
+  labels
+}
+
+.validate_method <- function(method) {
+  if (!is.null(method) &&
+      (!is.character(method) || length(method) != 1L || is.na(method)))
+    stop("method must be a single non-missing value.", call. = FALSE)
+  method
+}
+
+.validate_scalar <- function(x, name, type = c("numeric", "logical", "character"),
+                             integer = FALSE, lower = -Inf, upper = Inf) {
+  type <- match.arg(type)
+  valid_type <- switch(type,
+    numeric = is.numeric(x) && !is.complex(x),
+    logical = is.logical(x),
+    character = is.character(x)
+  )
+
+  if (!valid_type || length(x) != 1L || anyNA(x) ||
+      (type != "character" && !is.finite(x)) ||
+      (integer && x != floor(x)) ||
+      (type != "character" && (x < lower || x > upper)))
+    stop(name, " must be a single ",
+      if (integer && lower >= 1) "positive integer" else
+        if (integer) "non-negative integer" else type, ".", call. = FALSE)
+
+  x
+}
+
+## values of the control parameter opt (tour refinement after construction)
+.opt_values <- c("two", "or", "three", "two+or")
+
+.validate_opt <- function(opt) {
+  if (is.null(opt))
+    return(invisible(opt))
+  .validate_scalar(opt, "opt", "character")
+  if (!opt %in% .opt_values)
+    stop("opt must be one of ", paste(dQuote(.opt_values, FALSE), collapse = ", "),
+      ".", call. = FALSE)
+  invisible(opt)
+}
+
+.validate_control <- function(control) {
+  .validate_scalar(control$verbose, "verbose", "logical")
+  ## note: use [[ ]] since $ would partially match two_opt_repetitions
+  if (!is.null(control[["two_opt"]]))
+    .validate_scalar(control[["two_opt"]], "two_opt", "logical")
+  .validate_opt(control$opt)
+  .validate_scalar(control$rep, "rep", integer = TRUE, lower = 1)
+
+  if (!is.null(control$two_opt_repetitions))
+    .validate_scalar(control$two_opt_repetitions, "two_opt_repetitions",
+      integer = TRUE, lower = 1)
+  if (!is.null(control$tmax))
+    .validate_scalar(control$tmax, "tmax", integer = TRUE, lower = 1)
+  if (!is.null(control$maxit))
+    .validate_scalar(control$maxit, "maxit", integer = TRUE, lower = 1)
+  if (!is.null(control$trace))
+    .validate_scalar(control$trace, "trace", integer = TRUE, lower = 0)
+  if (!is.null(control$temp))
+    .validate_scalar(control$temp, "temp", lower = 0)
+  if (!is.null(control$precision))
+    .validate_scalar(control$precision, "precision", integer = TRUE, lower = 0)
+  if (!is.null(control$keep_files))
+    .validate_scalar(control$keep_files, "keep_files", "logical")
+  if (!is.null(control$clo))
+    .validate_scalar(control$clo, "clo", "character")
+  if (!is.null(control$exe))
+    .validate_scalar(control$exe, "exe", "character")
+  if (!is.null(control$local_move) && !is.function(control$local_move))
+    stop("local_move must be a function.", call. = FALSE)
+
+  control
+}
+
 
 .get_parameters <- function(parameter, defaults, method = NA) {
-  defaults <- c(as.list(defaults), "two_opt" = FALSE, rep = FALSE)
+  # add standard parameters
+  defaults <- utils::modifyList(
+    list(verbose = FALSE, opt = NULL, max_segment = NULL, rep = 1L),
+    as.list(defaults),
+    keep.null = TRUE
+  )
+
   parameter <- as.list(parameter)
-
-  ## add verbose
-  if(is.null(defaults$verbose)) defaults$verbose <- FALSE
-
   if(length(parameter) != 0) {
     o <- pmatch(names(parameter), names(defaults))
 
     ## unknown parameter
     if(any(is.na(o))){
-      warning(sprintf(ngettext(length(is.na(o)),
+      warning(sprintf(ngettext(sum(is.na(o)),
          "Unknown parameter: %s",
          "Unknown parameters: %s"),
          paste(names(parameter)[is.na(o)],
@@ -52,6 +142,8 @@
     defaults[o[!is.na(o)]] <- parameter[!is.na(o)]
   }
 
+  defaults <- .validate_control(defaults)
+
   if(defaults$verbose) {
     cat("Used control parameters by", sQuote(method), "\n")
 
@@ -65,4 +157,5 @@
 
   defaults
 }
+
 

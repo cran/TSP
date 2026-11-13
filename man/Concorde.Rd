@@ -19,7 +19,7 @@ linkern_help()
 executables are installed.}
 }
 \value{
-\code{concorde_path()} returns the path to the executable. Others functions: Nothing.
+\code{concorde_path()} returns the path to the executable. The other functions return nothing.
 }
 \description{
 The Concorde TSP Solver package contains several solvers.  Currently,
@@ -27,7 +27,15 @@ interfaces to the Concorde solver (Applegate et al. 2001), one of the most
 advanced and fastest TSP solvers using branch-and-cut, and the Chained
 Lin-Kernighan (Applegate et al. 2003) implementation are provided in
 \pkg{TSP}. Concorde can solve \link{TSP}s and \link{ETSP}s directly. \link{ATSP}s are
-reformulated as larger TSP's and then solved.
+reformulated as larger TSPs and then solved.
+}
+\details{
+Note: Concorde and linkern natively solve \link{ETSP}s (Euclidean TSPs given as
+coordinates). The coordinates are passed on to the solvers as they are
+(after scaling to integers, see below), so no distance matrix needs to be
+calculated and the memory use grows only linearly with the number of
+cities. The other methods in \code{\link[=solve_TSP]{solve_TSP()}} first convert an \link{ETSP} into a
+distance matrix.
 }
 \section{Installation of Concorde}{
 The Concorde TSP Solver is freely available for academic research.
@@ -54,8 +62,26 @@ after the decimal point) to convert the provided distances into the needed
 integer value range. The \code{precision} value can also be specified in
 \code{control} in \code{\link[=solve_TSP]{solve_TSP()}} with method Concorde. Warning
 messages will alert the user if the conversion to integer values results
-into rounding errors that are worse then what is specified in the
+in rounding errors that are worse than what is specified in the
 \code{precision} control parameter.
+
+For Euclidean problems (\link{ETSP}), the coordinates are shifted to start at
+zero and multiplied by \code{10^precision}, because Concorde rounds the
+calculated distances to integers. To avoid integer overflows in Concorde,
+the scaling is reduced (with a warning) so that no scaled coordinate exceeds
+\eqn{10^7}. \code{\link[=write_TSPLIB]{write_TSPLIB()}} gives a warning if cities end up with identical
+coordinates (e.g., because rounding made distinct cities identical, i.e.,
+their distances became smaller than 1); increase \code{precision} or rescale the
+data in this case.
+
+Concorde and linkern have their own random number generators, which
+\code{\link[=set.seed]{set.seed()}} cannot reach. Their seed can be set with the optional control
+parameter \code{seed}, e.g., \code{control = list(seed = 1234)}. It is passed on to
+the programs (option \code{-s}) and has to be a whole number between 0 and
+\code{.Machine$integer.max}. If no \code{seed} is specified, one random number is
+drawn from R's random number generator and used as the seed, so
+calling \code{\link[=set.seed]{set.seed()}} before \code{\link[=solve_TSP]{solve_TSP()}} also makes these methods
+reproducible (this advances R's global random-number stream by one draw).
 
 To get a list of all available command line options which can be used via
 the \code{clo} option for \code{solve_TSP} use \code{concorde_help()} and
@@ -76,7 +102,7 @@ kill the 'concorde' process via your operating system.
 concorde_path()
 
 
-## set path to the Concorde executible if it is not in the search PATH
+## set path to the Concorde executable if it is not in the search PATH
 ## Example:
 ## concorde_path("~/concorde/")
 
@@ -85,8 +111,16 @@ concorde_help()
 data("USCA312")
 
 ## run Concorde in verbose mode (-v) with fast cuts only (-V)
-## Note: use the contol parameter verbose = FALSE to supress Concorde's output
+## Note: use the control parameter verbose = FALSE to suppress Concorde's output
+set.seed(1234)
 solve_TSP(USCA312, method = "concorde", control = list(clo = "-v -V"))
+
+## Concorde and linkern can directly solve Euclidean TSPs (ETSP). The
+## coordinates are used directly, so no large distance matrix is calculated.
+etsp <- ETSP(data.frame(x = runif(20), y = runif(20)))
+tour <- solve_TSP(etsp, method = "concorde", control = list(verbose = FALSE))
+tour
+plot(etsp, tour)
 }
 
 }
@@ -103,17 +137,11 @@ Lin-Kernighan for Large Traveling Salesman Problems, \emph{INFORMS Journal
 on Computing}, \bold{15}, 82--92.
 }
 \seealso{
-Other TSP: 
-\code{\link{ATSP}()},
-\code{\link{ETSP}()},
-\code{\link{TSP}()},
-\code{\link{TSPLIB}},
-\code{\link{insert_dummy}()},
-\code{\link{reformulate_ATSP_as_TSP}()},
-\code{\link{solve_TSP}()}
+Other solver:
+\code{\link[=solve_TSP]{solve_TSP()}}
 }
 \author{
 Michael Hahsler
 }
-\concept{TSP}
+\concept{solver}
 \keyword{documentation}

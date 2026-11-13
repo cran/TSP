@@ -1,3 +1,54 @@
+# TSP 1.3.0 (2026/11/13)
+
+## New Features
+* Added the improvement methods "or_opt" (Or-opt segment insertion with
+  the control parameter `max_segment`) and "three_opt" (3-opt exchange of three
+  edges) to `solve_TSP()`. Like "two_opt", they work on distance matrices for
+  TSPs and ATSPs and improve a given `tour` or a random tour. For ATSPs, no
+  segments are reversed.
+* Added the control parameter `opt` to `solve_TSP()` to refine a constructed
+  tour with `"two"` (2-opt), `"or"` (Or-opt), `"three"` (3-opt), or `"two+or"`
+  (2-opt and Or-opt alternately). The default method still uses 2-opt.
+
+## Deprecated
+* The control parameter `two_opt` of `solve_TSP()` is deprecated with a message. 
+  Use `opt = "two"` instead.
+
+## Changes
+* write_TSPLIB() and the Concorde interface now round distances to the nearest
+  integer instead of truncating them and warns if precision is too small.
+* Removed the `seed` argument (and control option) of `solve_TSP()` that was
+  added in 1.2.8. Randomized methods rely again on R's global random number
+  generator, so use `set.seed()` before calling `solve_TSP()`. The solvers no
+  longer replace the global random-number state.
+* Repetitions (`rep` and method "repetitive_nn") now draw one seed per
+  repetition from the random number generator of the main R process and seed
+  each foreach iteration with it, so results are reproducible with `set.seed()`
+  independent of the foreach backend and the number of workers.
+* Concorde and linkern: `seed` is now an optional control parameter, e.g.,
+  `control = list(seed = 1234)`, that is passed on to the executables (option
+  `-s`) and is checked to be a valid non-negative integer. Without a seed, one is
+  drawn from the R random number generator, so `set.seed()` makes them
+  reproducible.
+
+## Bug fixes
+* Fixed Concorde and linkern for ETSP: coordinates are now scaled to integers
+  (using `precision`) before they are written.
+
+# TSP 1.2.8 (09/30/2026)
+* Modernized the test suite to testthat edition 3.
+* Expanded solver, TSPLIB, boundary-case, and reproducibility tests; fixed
+  zero-city handling for ATSP, ETSP, and random tours and one-city handling for
+  simulated annealing.
+* Added a `seed` control option for reproducible randomized repetitions across
+  sequential and parallel foreach backends.
+* The Concorde and linkern interfaces now check solver exit statuses and clean
+  temporary and auxiliary files after both successful and failed runs.
+* Fixed spelling and documentation.
+* Fixed input-validation bugs in TSP(), ATSP(), tour_length.ETSP(), 
+  and validate tour indices before passing them to C.
+* Fixed dll registration.
+
 # TSP 1.2.7 (03/22/2026)
 * Improved verbose output for method "sa."
 * Improved man page for solve_TSP (suggested by Henrik Bengtsson).
@@ -121,7 +172,7 @@
 * we use foreach (use doParallel) to compute repetitions in parallel
 * ETSP (Euclidean TSP) added.
 * generic and arguments for tour_length have # Changed
-      (fist argument is now a tour).
+      (first argument is now a tour).
 * method "2-opt" was renamed to "two_opt" so it can also be used as a
         proper variable name.
 * solve_TSP gained methods "identity" and "random".

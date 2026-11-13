@@ -1,0 +1,112 @@
+---
+title: "Getting started with TSP"
+author: "Michael Hahsler and Kurt Hornik"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+bibliography: TSP.bib
+vignette: >
+  %\VignetteIndexEntry{Getting started with TSP}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 5
+)
+library(TSP)
+```
+
+This vignette introduces how to solve TSP problems using the R package **TSP** [@Hahsler+Hornik2007]. 
+The traveling salesperson problem asks for the shortest round trip that visits
+each city exactly once. The **TSP** package provides classes for representing
+traveling salesperson problems, several construction and improvement
+heuristics, and interfaces to the external Concorde solver.
+
+This vignette covers the typical workflow:
+
+1. Create a problem from coordinates or a distance matrix.
+2. Find a tour with `solve_TSP()`.
+3. Inspect, and visualize a solution.
+
+## Installation
+
+Install the released version from CRAN:
+
+```{r install, eval=FALSE}
+install.packages("TSP")
+```
+
+Then load the package:
+
+```{r load-package}
+library(TSP)
+```
+
+## Basic Usage
+### Create a TSP problem from coordinates
+
+The standard representation of a symmetric TSP is a distance matrix.
+For locations described by coordinates you can calculate distances before 
+creating the TSP object. Here we create a Euclidean traveling
+salesperson problem fro ma dataframe with coordinates. 
+Row names are used as city labels.
+
+```{r create-etsp}
+cities <- data.frame(
+  x = c(0.15, 0.38, 0.62, 0.82, 0.78, 0.55, 0.28, 0.08),
+  y = c(0.20, 0.08, 0.18, 0.42, 0.78, 0.92, 0.80, 0.52),
+  row.names = LETTERS[1:8]
+)
+
+problem <- TSP(dist(cities))
+problem
+n_of_cities(problem)
+labels(problem)
+```
+
+Note, that there are other representations for Euclidean TSPs `ETSP()` and 
+asymmetric TSPs `ATSP()` available. Most algorithms will convert them into
+a distance-based representation first.
+
+### Solve the problem
+
+`solve_TSP()` returns a `TOUR`, an integer permutation giving the order in
+which the cities are visited. The default combines arbitrary insertion with
+2-opt improvement.
+
+```{r solve}
+set.seed(123)
+tour <- solve_TSP(problem)
+tour
+as.integer(tour)
+labels(tour)
+tour_length(tour)
+```
+
+The stored tour length includes the final edge from the last city back to the
+first. A TSP solution is therefore a cycle, not an open path.
+
+Plot the coordinates and the resulting tour with `plot()`:
+
+```{r plot-tour}
+plot(ETSP(cities), tour, main = "A tour through eight cities", tour_col = "steelblue")
+```
+
+
+## Where to go next
+
+Read about the [available TSP solvers.](https://michael.hahsler.net/TSP/articles/solution_methods.html)
+
+The most useful help pages are:
+
+- `?solve_TSP` for all solvers and their control parameters;
+- `?TSP`, `?ETSP`, and `?ATSP` for problem representations;
+- `?TOUR` and `?tour_length` for working with solutions;
+- `?read_TSPLIB` and `?write_TSPLIB` for TSPLIB files; and
+- `?insert_dummy` and `?cut_tour` for turning a cycle into one or more paths.
+## References

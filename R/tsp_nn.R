@@ -1,6 +1,6 @@
 #######################################################################
 # TSP - Traveling Salesperson Problem
-# Copyrigth (C) 2011 Michael Hahsler and Kurt Hornik
+# Copyright (C) 2011 Michael Hahsler and Kurt Hornik
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,9 +32,7 @@ tsp_nn <- function(x, control = NULL) {
       start = sample(n, 1),
       verbose = FALSE
     ), method = "nn")
-    start <- control$start
-    if(start < 0 || start > n)
-      stop(paste("illegal value for", sQuote("start")))
+    start <- .validate_city_index(control$start, n)
 
     placed <- logical(n)
     order <- integer(n)
@@ -76,8 +74,14 @@ tsp_repetitive_nn <- function(x, control){
   #tours <- lapply(1:n, function(i) tsp_nn(x, control = list(start = i)))
   ## no backend would warn!
   i <- 0L ## for R CMD check (no global binding for i)
+  ## seeds are drawn from the RNG of the main process (see .with_rng_seed())
+  rs <- .draw_repetition_seeds(n)
+  with_seed <- .with_rng_seed ## local copy so it is exported to workers
   suppressWarnings(
-    tours <- foreach(i = 1:n) %dopar% tsp_nn(x, control = list(start = i))
+    tours <- foreach(i = 1:n) %dopar% {
+      with_seed(rs$seeds[i], rs$kind,
+        tsp_nn(x, control = list(start = i)))
+    }
   )
 
   if (control$verbose)

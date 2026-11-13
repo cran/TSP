@@ -25,7 +25,14 @@
 #' advanced and fastest TSP solvers using branch-and-cut, and the Chained
 #' Lin-Kernighan (Applegate et al. 2003) implementation are provided in
 #' \pkg{TSP}. Concorde can solve [TSP]s and [ETSP]s directly. [ATSP]s are
-#' reformulated as larger TSP's and then solved.
+#' reformulated as larger TSPs and then solved.
+#'
+#' Note: Concorde and linkern natively solve [ETSP]s (Euclidean TSPs given as
+#' coordinates). The coordinates are passed on to the solvers as they are
+#' (after scaling to integers, see below), so no distance matrix needs to be
+#' calculated and the memory use grows only linearly with the number of
+#' cities. The other methods in [solve_TSP()] first convert an [ETSP] into a
+#' distance matrix.
 #'
 #'
 #' # Installation of Concorde
@@ -52,8 +59,26 @@
 #' integer value range. The `precision` value can also be specified in
 #' `control` in [solve_TSP()] with method Concorde. Warning
 #' messages will alert the user if the conversion to integer values results
-#' into rounding errors that are worse then what is specified in the
+#' in rounding errors that are worse than what is specified in the
 #' `precision` control parameter.
+#'
+#' For Euclidean problems ([ETSP]), the coordinates are shifted to start at
+#' zero and multiplied by `10^precision`, because Concorde rounds the
+#' calculated distances to integers. To avoid integer overflows in Concorde,
+#' the scaling is reduced (with a warning) so that no scaled coordinate exceeds
+#' \eqn{10^7}. [write_TSPLIB()] gives a warning if cities end up with identical
+#' coordinates (e.g., because rounding made distinct cities identical, i.e.,
+#' their distances became smaller than 1); increase `precision` or rescale the
+#' data in this case.
+#'
+#' Concorde and linkern have their own random number generators, which
+#' [set.seed()] cannot reach. Their seed can be set with the optional control
+#' parameter `seed`, e.g., `control = list(seed = 1234)`. It is passed on to
+#' the programs (option `-s`) and has to be a whole number between 0 and
+#' `.Machine$integer.max`. If no `seed` is specified, one random number is
+#' drawn from R's random number generator and used as the seed, so
+#' calling [set.seed()] before [solve_TSP()] also makes these methods
+#' reproducible (this advances R's global random-number stream by one draw).
 #'
 #' To get a list of all available command line options which can be used via
 #' the `clo` option for `solve_TSP` use `concorde_help()` and
@@ -66,14 +91,14 @@
 #' terminate the Concorde executable. If Concorde keeps running, then you can 
 #' kill the 'concorde' process via your operating system.
 #'
-#' @family TSP
+#' @family solver
 #'
 #' @name Concorde
 #' @aliases Concorde concorde concorde_path concorde_help linkern_help
 #'
 #' @param path a character string with the path to the directory where the
 #' executables are installed.
-#' @returns `concorde_path()` returns the path to the executable. Others functions: Nothing.
+#' @returns `concorde_path()` returns the path to the executable. The other functions return nothing.
 #' @author Michael Hahsler
 #' @references Concorde home page,
 #' \url{https://www.math.uwaterloo.ca/tsp/concorde/}
@@ -93,7 +118,7 @@
 #' concorde_path()
 #'
 #'
-#' ## set path to the Concorde executible if it is not in the search PATH
+#' ## set path to the Concorde executable if it is not in the search PATH
 #' ## Example:
 #' ## concorde_path("~/concorde/")
 #'
@@ -102,8 +127,16 @@
 #' data("USCA312")
 #'
 #' ## run Concorde in verbose mode (-v) with fast cuts only (-V)
-#' ## Note: use the contol parameter verbose = FALSE to supress Concorde's output
+#' ## Note: use the control parameter verbose = FALSE to suppress Concorde's output
+#' set.seed(1234)
 #' solve_TSP(USCA312, method = "concorde", control = list(clo = "-v -V"))
+#'
+#' ## Concorde and linkern can directly solve Euclidean TSPs (ETSP). The
+#' ## coordinates are used directly, so no large distance matrix is calculated.
+#' etsp <- ETSP(data.frame(x = runif(20), y = runif(20)))
+#' tour <- solve_TSP(etsp, method = "concorde", control = list(verbose = FALSE))
+#' tour
+#' plot(etsp, tour)
 #' }
 #'
 NULL
@@ -132,7 +165,7 @@ NULL
     } else {
       warning(
         paste0(
-          "Concorde/Linken can only handle distances represented as integers. Converting the provided distances to integers with precison ",
+          "Concorde/Linkern can only handle distances represented as integers. Converting the provided distances to integers with precision ",
           prec,
           ". This may lead to rounding errors."
         ),
@@ -142,10 +175,44 @@ NULL
     } 
   }
 
+  ## round to the nearest integer (instead of truncating)
+  x <- round(x)
   storage.mode(x) <-
-    "integer" ## so write.TSBLIB does not do precision changes
+    "integer" ## so write_TSPLIB does not change the precision
 
   x
+}
+
+## prepare ETSP coordinates for Concorde/linkern. Their EUC_2D/EUC_3D distances
+## are rounded to integers, so
+## * the coordinates are shifted to start at 0 and scaled by 10^precision so the
+##   rounding error stays small. The scaling is reduced if the largest
+##   coordinate would exceed MAX (default 10^7) because larger values risk
+##   integer overflows in Concorde's distance calculation.
+## Cities that become identical after rounding (distances smaller than 1) are
+## reported by write_TSPLIB().
+.prepare_coords_concorde <- function(x, MAX = 1e7, precision) {
+  x <- as.matrix(x)
+  rownames(x) <- NULL
+  x <- sweep(x, 2, apply(x, 2, min))
+  max_x <- max(x)
+
+  scaled <- x
+  if (max_x > 0) {
+    prec <- floor(log10(MAX / max_x))
+    if (prec < precision)
+      warning(
+        "Concorde/Linkern can only handle integer coordinates up to ", MAX,
+        ". Converting the coordinates with precision ", prec,
+        ". This may lead to rounding errors.",
+        immediate. = TRUE
+      )
+    scaled <- x * 10 ^ min(prec, precision)
+  }
+
+  scaled <- round(scaled)
+  class(scaled) <- c("ETSP", class(scaled))
+  scaled
 }
 
 ## interface to the Concorde algorithm
@@ -162,26 +229,26 @@ tsp_concorde <- function(x, control = NULL) {
       clo = "",
       exe = .find_exe(control$exe, "concorde"),
       precision = 6,
+      seed = NULL,
       verbose = TRUE,
       keep_files = FALSE
     )
   )
 
-
-
-  ## get temp files and change working directory
-  wd <- tempdir()
+  ## Use a separate directory because Concorde may create auxiliary files.
+  wd <- tempfile("TSP-concorde-", tmpdir = tempdir())
+  if (!dir.create(wd))
+    stop("Could not create a temporary directory for Concorde.", call. = FALSE)
   dir <- getwd()
+  on.exit({
+    setwd(dir)
+    if (!control$keep_files)
+      unlink(wd, recursive = TRUE)
+  }, add = TRUE)
   setwd(wd)
-  on.exit(setwd(dir))
 
-  ### fix for Windows by Stephen Eick
-  ##temp_file <- tempfile(tmpdir = wd)
-  temp_file <- basename(tempfile(tmpdir = wd))
-
-  ## file name needs to be unique
-  tmp_file_in  <- paste(temp_file, ".dat", sep = "")
-  tmp_file_out <- paste(temp_file, ".sol", sep = "")
+  tmp_file_in  <- "problem.dat"
+  tmp_file_out <- "result.sol"
 
   ## check x
   if (inherits(x, "TSP")) {
@@ -196,19 +263,16 @@ tsp_concorde <- function(x, control = NULL) {
     write_TSPLIB(x, file = tmp_file_in, precision = 0)
 
   } else if (inherits(x, "ETSP")) {
-    ## nothing to do!
-    write_TSPLIB(x, file = tmp_file_in, precision = control$precision)
+    x <- .prepare_coords_concorde(x, 1e7, control$precision)
+    write_TSPLIB(x, file = tmp_file_in, precision = 15)
   } else
     stop("Concorde only handles TSP and ETSP.")
 
-  ## change working directory
-
   ## do the call and read back result
-  ## we do not check return values of Concorde since they are not
-  ## very consistent
-  system2(
+  status <- system2(
     control$exe,
-    args =  paste("-x", control$clo, "-o", tmp_file_out, tmp_file_in),
+    args =  paste("-x", control$clo, .seed_clo(control$seed), "-o",
+      tmp_file_out, tmp_file_in),
     stdout = if (control$verbose)
       ""
     else
@@ -216,12 +280,17 @@ tsp_concorde <- function(x, control = NULL) {
     stderr = if (control$verbose)
       ""
     else
-      FALSE,
+      FALSE
   )
+
+  ## Some Concorde builds return -1 after successfully writing the solution;
+  ## system2 reports that value as 255 on Unix-like systems.
+  if (!status %in% c(0L, -1L, 255L))
+    stop("Concorde exited with status ", status, ".", call. = FALSE)
 
   if (!file.access(tmp_file_out) == 0)
     stop(
-      "Concorde has not produced a result file.\nIs concorde properly installed? (see ? Concorde)\nDid Concorde finish without an error or being interupted?"
+      "Concorde has not produced a result file.\nIs Concorde properly installed? (see ?Concorde)\nDid Concorde finish without an error or interruption?"
     )
   ##else cat("Concorde done.\n")
 
@@ -229,11 +298,8 @@ tsp_concorde <- function(x, control = NULL) {
   ## remove number of nodes and add one (result starts with 0)
   order <- order[-1] + 1L
 
-  ## tidy up
-  if (!control$keep_files)
-    unlink(c(tmp_file_in, tmp_file_out))
-  else
-    cat("File are in:", wd, "\n\n")
+  if (control$keep_files)
+    cat("Files are in:", wd, "\n\n")
 
   order
 }
@@ -252,6 +318,7 @@ tsp_linkern <- function(x, control = NULL) {
       exe = .find_exe(control$exe, "linkern"),
       clo = "",
       precision = 6,
+      seed = NULL,
       verbose = TRUE,
       keep_files = FALSE
     )
@@ -268,33 +335,33 @@ tsp_linkern <- function(x, control = NULL) {
     x <- .prepare_dist_concorde(x, MAX, precision = control$precision, verbose = control$verbose)
 
   } else if (inherits(x, "ETSP")) {
-    ## nothing to do
+    x <- .prepare_coords_concorde(x, 1e7, control$precision)
   } else
     stop("Linkern only works for TSP and ETSP.")
 
-  ## get temp files and change working directory
-  wd <- tempdir()
+  ## Use a separate directory because linkern may create auxiliary files.
+  wd <- tempfile("TSP-linkern-", tmpdir = tempdir())
+  if (!dir.create(wd))
+    stop("Could not create a temporary directory for Linkern.", call. = FALSE)
   dir <- getwd()
+  on.exit({
+    setwd(dir)
+    if (!control$keep_files)
+      unlink(wd, recursive = TRUE)
+  }, add = TRUE)
   setwd(wd)
-  on.exit(setwd(dir))
 
-  ### fix for Windows by Stephen Eick
-  ##temp_file <- tempfile(tmpdir = wd)
-  temp_file <- basename(tempfile(tmpdir = wd))
+  tmp_file_in  <- "problem.dat"
+  tmp_file_out <- "result.sol"
 
-  ## file name needs to be unique
-  tmp_file_in  <- paste(temp_file, ".dat", sep = "")
-  tmp_file_out <- paste(temp_file, ".sol", sep = "")
-
-  write_TSPLIB(x, file = tmp_file_in, precision = 0)
+  write_TSPLIB(x, file = tmp_file_in,
+    precision = if (inherits(x, "ETSP")) 15 else 0)
 
   ## do the call and read back result
-  ## we do not check return values of Concorde since they are not
-  ## very consistent
-  system2(
+  status <- system2(
     control$exe,
     args =  paste("-o",
-      tmp_file_out, control$clo, tmp_file_in),
+      tmp_file_out, control$clo, .seed_clo(control$seed), tmp_file_in),
     stdout = if (control$verbose)
       ""
     else
@@ -304,6 +371,9 @@ tsp_linkern <- function(x, control = NULL) {
     else
       FALSE
   )
+
+  if (!identical(status, 0L))
+    stop("Linkern exited with status ", status, ".", call. = FALSE)
 
   if (!file.access(tmp_file_out) == 0)
     stop(
@@ -315,11 +385,8 @@ tsp_linkern <- function(x, control = NULL) {
   ## remove number of nodes and add one (result starts with 0)
   order <- order + as.integer(1)
 
-  ## tidy up
-  if (!control$keep_files)
-    unlink(c(tmp_file_in, tmp_file_out))
-  else
-    cat("File are in:", wd, "\n\n")
+  if (control$keep_files)
+    cat("Files are in:", wd, "\n\n")
 
   order
 }
@@ -388,6 +455,20 @@ linkern_help <- function() {
 }
 
 
+
+## command line option to set the random seed of Concorde/linkern.
+## Concorde reads the seed as a C int, so it must be a whole number in
+## [0, .Machine$integer.max]. If no seed is given, a seed is drawn from R's
+## random number generator so that set.seed() also controls the executables.
+.seed_clo <- function(seed = NULL) {
+  if (is.null(seed))
+    seed <- sample.int(.Machine$integer.max, 1L)
+  else if (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed) ||
+      seed != floor(seed) || seed < 0 || seed > .Machine$integer.max)
+    stop("seed for Concorde/linkern must be a single non-negative integer ",
+      "not larger than ", .Machine$integer.max, ".", call. = FALSE)
+  paste("-s", format(seed, scientific = FALSE))
+}
 
 ## helper to find the 'concorde' executable
 .find_exe <- function(exe = NULL, prog) {

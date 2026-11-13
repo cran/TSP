@@ -65,7 +65,7 @@ Constructor to create an instance of a Euclidean traveling salesperson
 problem (TSP) represented by city coordinates and some auxiliary methods.
 }
 \details{
-Objects of class \code{ETSP} are internally represented as a \code{matrix}
+Objects of class \code{ETSP} are internally represented as \code{matrix}
 objects (use \code{as.matrix()} to get the \code{matrix} object).
 }
 \examples{
@@ -90,14 +90,11 @@ plot(etsp, tour, tour_col = "red", labels = FALSE)
 text(etsp, paste("City", rownames(etsp)), pos = 1)
 }
 \seealso{
-Other TSP: 
-\code{\link{ATSP}()},
-\code{\link{Concorde}},
-\code{\link{TSP}()},
-\code{\link{TSPLIB}},
-\code{\link{insert_dummy}()},
-\code{\link{reformulate_ATSP_as_TSP}()},
-\code{\link{solve_TSP}()}
+Other TSP:
+\code{\link[=ATSP]{ATSP()}},
+\code{\link[=TSP]{TSP()}},
+\code{\link[=insert_dummy]{insert_dummy()}},
+\code{\link[=reformulate_ATSP_as_TSP]{reformulate_ATSP_as_TSP()}}
 }
 \author{
 Michael Hahsler

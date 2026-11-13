@@ -49,10 +49,19 @@ copy of the \href{https://github.com/mhahsler/TSP/tree/master/TSPLIB95}{TSPLIB95
 \details{
 In the TSPLIB format distances are represented by integer values. Therefore,
 if \code{x} contains \code{double} values (which is normal in R) the values
-given in \code{x} are multiplied by \eqn{10^{precision}} before coercion to
-\code{integer}. Note that therefore all results produced by programs using
+given in \code{x} are multiplied by \eqn{10^{precision}} and rounded to the
+nearest \code{integer}. Note that therefore all results produced by programs using
 the TSPLIB file as input need to be divided by \eqn{10^{precision}} (i.e.,
-the decimal point has to be shifted \code{precision} placed to the left).
+the decimal point has to be shifted \code{precision} places to the left).
+
+For \link{TSP} and \link{ATSP} objects, a warning is given if distances that are not
+zero become zero after the conversion to integers (i.e., \code{precision} is too
+low).
+
+For \link{ETSP} objects, the coordinates are written with \code{precision} digits
+(in scientific notation) and are not scaled. A warning is given if two or
+more cities have identical coordinates in the written file because their
+distance is zero.
 
 Currently only the following \code{EDGE_WEIGHT_TYPE}s are implemented:
 \code{EXPLICIT}, \code{EUC_2D}, \code{EUC_3D}, \code{ATT} and \code{GEO}.
@@ -62,7 +71,7 @@ Currently only the following \code{EDGE_WEIGHT_TYPE}s are implemented:
 ## Drilling problem from TSP
 drill <- read_TSPLIB(system.file("examples/d493.tsp", package = "TSP"))
 drill
-tour <- solve_TSP(drill, method = "nn", two_opt = TRUE)
+tour <- solve_TSP(drill, method = "nn", opt = "two")
 tour
 plot(drill, tour, cex=.6, col = "red", pch= 3, main = "TSPLIB: d493")
 
@@ -97,17 +106,11 @@ unlink("example.tsp")
 Reinelt, Gerhard. 1991. “TSPLIB—a Traveling Salesman Problem Library.” ORSA Journal on Computing 3 (4): 376–84. \doi{10.1287/ijoc.3.4.376}
 }
 \seealso{
-Other TSP: 
-\code{\link{ATSP}()},
-\code{\link{Concorde}},
-\code{\link{ETSP}()},
-\code{\link{TSP}()},
-\code{\link{insert_dummy}()},
-\code{\link{reformulate_ATSP_as_TSP}()},
-\code{\link{solve_TSP}()}
+Other data:
+\code{\link{USCA}}
 }
 \author{
 Michael Hahsler
 }
-\concept{TSP}
+\concept{data}
 \keyword{file}

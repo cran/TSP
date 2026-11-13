@@ -22,7 +22,7 @@
 #' Constructor to create an instance of a Euclidean traveling salesperson
 #' problem (TSP) represented by city coordinates and some auxiliary methods.
 #'
-#' Objects of class `ETSP` are internally represented as a `matrix`
+#' Objects of class `ETSP` are internally represented as `matrix`
 #' objects (use `as.matrix()` to get the `matrix` object).
 #'
 #' @family TSP
@@ -66,8 +66,14 @@
 #' text(etsp, paste("City", rownames(etsp)), pos = 1)
 #' @export
 ETSP <- function(x, labels = NULL) {
-  if(inherits(x, "ETSP")) return(x)
+  if (inherits(x, "ETSP")) {
+    labels <- .validate_labels(labels, n_of_cities(x))
+    if (!is.null(labels))
+      rownames(x) <- labels
+    return(x)
+  }
   x <- as.ETSP(x)
+  labels <- .validate_labels(labels, n_of_cities(x))
   if(!is.null(labels)) rownames(x) <- labels
   x
 }
@@ -82,7 +88,7 @@ as.ETSP <- function(x) UseMethod("as.ETSP")
 #' @export
 as.ETSP.matrix <- function(x){
   mode(x) <- "numeric"
-  if(is.null(rownames(x))) rownames(x) <- 1:nrow(x)
+  if(is.null(rownames(x))) rownames(x) <- seq_len(nrow(x))
 
   class(x) <- c("ETSP", class(x))
   x

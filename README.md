@@ -5,34 +5,45 @@
 CRAN](https://www.r-pkg.org/badges/version/TSP)](https://CRAN.R-project.org/package=TSP)
 [![CRAN RStudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/TSP)](https://CRAN.R-project.org/package=TSP)
-![License](https://img.shields.io/cran/l/TSP) [![r-universe
-status](https://mhahsler.r-universe.dev/badges/TSP)](https://mhahsler.r-universe.dev/TSP)
+![License](https://img.shields.io/cran/l/TSP)
 [![Anaconda.org](https://anaconda.org/conda-forge/r-tsp/badges/version.svg)](https://anaconda.org/conda-forge/r-tsp)
+[![r-universe
+status](https://mhahsler.r-universe.dev/badges/TSP)](https://mhahsler.r-universe.dev/TSP)
+[![StackOverflow](https://img.shields.io/badge/stackoverflow-TSP+R-orange.svg)](https://stackoverflow.com/questions/tagged/TSP+R)
+
+**Maintainer:** [Michael Hahsler](https://michael.hahsler.net)
 
 ## Introduction
 
 The TSP package ([Hahsler and Hornik 2007](#ref-Hahsler+Hornik2007))
-provides the basic infrastructure and some algorithms for the traveling
-salesman problems (symmetric, asymmetric and Euclidean TSPs). The
+provides the basic infrastructure and some algorithms for traveling
+salesman problems (symmetric, asymmetric, and Euclidean TSPs). The
 package provides some fast implementations of simple algorithms
 including:
 
-- **Tour construction heuristics**
+- Tour construction heuristics
   - **Insertion algorithms**: nearest insertion, farthest insertion,
-    cheapest insertion, arbitrary insertion ([Rosenkrantz, Stearns, and
-    Philip M. Lewis 1977](#ref-Rosenkrantz1977))
-  - **Nearest neighbor methods**: Nearest neighbor and repetitive
-    nearest neighbor ([Rosenkrantz, Stearns, and Philip M. Lewis
+    cheapest insertion, arbitrary insertion ([Rosenkrantz et al.
     1977](#ref-Rosenkrantz1977))
-- **Tour improvement methods**
+  - **Nearest neighbor methods**: Nearest neighbor and repetitive
+    nearest neighbor ([Rosenkrantz et al. 1977](#ref-Rosenkrantz1977))
+- Tour improvement methods
   - **Two-opt heuristic** ([Croes 1958](#ref-Croes1958))
-  - **Simulated annealing** ([Kirkpatrick, Gelatt, and Vecchi
+  - **Or-opt heuristic**: moves short segments of cities to better
+    positions ([Or 1976](#ref-Or1976))
+  - **Three-opt heuristic** ([Bock 1958](#ref-Bock1958); [Lin
+    1965](#ref-Lin1965))
+  - **Simulated annealing** ([Kirkpatrick et al.
     1983](#ref-Kirkpatrick1983))
-- **State-of-the-art solver interfaces**
+- State-of-the-art solver interfaces
   - **Concorde TSP solver interface** ([Applegate et al.
     2000](#ref-Applegate2000), [2006](#ref-Applegate2006))
-  - **Concorde Chained-Lin-Kernighan heuristic interface** ([Applegate,
-    Cook, and Rohe 2003](#ref-Applegate2003))
+  - **Concorde Chained-Lin-Kernighan heuristic interface** ([Applegate
+    et al. 2003](#ref-Applegate2003))
+
+Most algorithms are optimized to work on symmetric TSPs stored as
+distance matrices, but asymmetric TSPs (ATSPs) and Euclidean TSPs
+(ETSPs) are also supported.
 
 The package can read and write the TSPLIB format ([Reinelt
 1991](#ref-Reinelt1991)) and it can solve many of the problems in the
@@ -47,24 +58,22 @@ The following R packages use `TSP`:
 [ForagingOrg](https://CRAN.R-project.org/package=ForagingOrg),
 [ggEDA](https://CRAN.R-project.org/package=ggEDA),
 [isocir](https://CRAN.R-project.org/package=isocir),
-[jocre](https://CRAN.R-project.org/package=jocre),
 [MLCOPULA](https://CRAN.R-project.org/package=MLCOPULA),
 [nilde](https://CRAN.R-project.org/package=nilde),
 [nlnet](https://CRAN.R-project.org/package=nlnet),
 [PairViz](https://CRAN.R-project.org/package=PairViz),
-[pencopulaCond](https://CRAN.R-project.org/package=pencopulaCond),
-[SCORPIUS](https://CRAN.R-project.org/package=SCORPIUS),
 [sensitivity](https://CRAN.R-project.org/package=sensitivity),
 [seriation](https://CRAN.R-project.org/package=seriation),
 [sfnetworks](https://CRAN.R-project.org/package=sfnetworks),
 [tspmeta](https://CRAN.R-project.org/package=tspmeta),
-[VineCopula](https://CRAN.R-project.org/package=VineCopula)
+[VineCopula](https://CRAN.R-project.org/package=VineCopula),
+[wompwomp](https://CRAN.R-project.org/package=wompwomp)
 
 To cite package ‘TSP’ in publications use:
 
 > Hahsler M, Hornik K (2007). “TSP - Infrastructure for the traveling
 > salesperson problem.” *Journal of Statistical Software*, *23*(2),
-> 1-21. ISSN 1548-7660, <doi:10.18637/jss.v023.i02>
+> 1-21. ISSN 1548-7660. <doi:10.18637/jss.v023.i02>
 > <https://doi.org/10.18637/jss.v023.i02>.
 
     @Article{,
@@ -122,7 +131,7 @@ tour
 
     ## object of class 'TOUR' 
     ## result of method 'arbitrary_insertion+two_opt' for 312 cities
-    ## tour length: 40653
+    ## tour length: 40632
 
 Show the first few cities in the tour.
 
@@ -130,12 +139,12 @@ Show the first few cities in the tour.
 head(tour, n = 10)
 ```
 
-    ## Daytona Beach, FL  Jacksonville, FL      Columbus, GA       Atlanta, GA 
-    ##                72               127                65                12 
-    ##         Macon, GA       Augusta, GA      Savannah, GA    Charleston, SC 
-    ##               157                14               250                52 
-    ##      Columbia, SC    Wilmington, NC 
-    ##                64               303
+    ##    Santa Cruz, CA      San Jose, CA      Stockton, CA   Carson City, NV 
+    ##               245               242               268                48 
+    ##          Reno, NV    Sacramento, CA      Berkeley, CA       Oakland, CA 
+    ##               219               225                26               186 
+    ## San Francisco, CA          Hilo, HI 
+    ##               241               119
 
 Visualize the complete tour.
 
@@ -148,90 +157,68 @@ map("world", col = "gray", add = TRUE)
 polygon(USCA312_GPS[, c("long", "lat")][tour, ], border = "red")
 ```
 
-![](inst/README_files/unnamed-chunk-6-1.png)<!-- -->
+![](man/figures/README-TSP_map-1.png)<!-- -->
 
 An online example application of TSP can be found on
 [shinyapps](https://shrinidhee.shinyapps.io/SimpleTSP).
 
 ## Help and Bug Reports
 
-You can find Q&A’s and ask your own questions at
+You can find Q&As and ask your own questions at
 <https://stackoverflow.com/search?q=TSP+R>
 
 Please submit bug reports to <https://github.com/mhahsler/TSP/issues>
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
+- <span id="ref-Applegate2000"></span>Applegate, David, Robert E. Bixby,
+  Vasek Chvátal, and William Cook. 2000. “TSP Cuts Which Do Not Conform
+  to the Template Paradigm.” In *Computational Combinatorial
+  Optimization, Optimal or Provably Near-Optimal Solutions*, edited
+  by M. Junger and D. Naddef, vol. 2241. Lecture Notes in Computer
+  Science. Springer-Verlag. <https://doi.org/10.1007/3-540-45586-8_7>.
 
-<div id="ref-Applegate2000" class="csl-entry">
+- <span id="ref-Applegate2006"></span>Applegate, David, Robert Bixby,
+  Vasek Chvátal, and William Cook. 2006. *Concorde TSP Solver*.
+  <https://www.math.uwaterloo.ca/tsp/concorde.html>.
 
-Applegate, David, Robert E. Bixby, Vasek Chvátal, and William Cook.
-2000. “TSP Cuts Which Do Not Conform to the Template Paradigm.” In
-*Computational Combinatorial Optimization, Optimal or Provably
-Near-Optimal Solutions*, edited by M. Junger and D. Naddef,
-2241:261–304. Lecture Notes in Computer Science. London, UK:
-Springer-Verlag. <https://doi.org/10.1007/3-540-45586-8_7>.
+- <span id="ref-Applegate2003"></span>Applegate, David, William Cook,
+  and Andre Rohe. 2003. “Chained Lin-Kernighan for Large Traveling
+  Salesman Problems.” *INFORMS Journal on Computing* 15 (1): 82–92.
+  <https://doi.org/10.1287/ijoc.15.1.82.15157>.
 
-</div>
+- <span id="ref-Bock1958"></span>Bock, F. 1958. “An Algorithm for
+  Solving "Traveling-Salesman" and Related Network Optimization
+  Problems.” Unpublished manuscript.
 
-<div id="ref-Applegate2006" class="csl-entry">
+- <span id="ref-Croes1958"></span>Croes, G. A. 1958. “A Method for
+  Solving Traveling-Salesman Problems.” *Operations Research* 6 (6):
+  791–812. <https://doi.org/10.1287/opre.6.6.791>.
 
-Applegate, David, Robert Bixby, Vasek Chvátal, and William Cook. 2006.
-*Concorde TSP Solver*.
-<https://www.math.uwaterloo.ca/tsp/concorde.html>.
+- <span id="ref-Hahsler+Hornik2007"></span>Hahsler, Michael, and Kurt
+  Hornik. 2007. “TSP – Infrastructure for the Traveling Salesperson
+  Problem.” *Journal of Statistical Software* 23 (2): 1–21.
+  <https://doi.org/10.18637/jss.v023.i02>.
 
-</div>
+- <span id="ref-Kirkpatrick1983"></span>Kirkpatrick, S., C. D. Gelatt,
+  and M. P. Vecchi. 1983. “Optimization by Simulated Annealing.”
+  *Science* 220 (4598): 671–80.
+  <https://doi.org/10.1126/science.220.4598.671>.
 
-<div id="ref-Applegate2003" class="csl-entry">
+- <span id="ref-Lin1965"></span>Lin, S. 1965. “Computer Solutions of the
+  Traveling-Salesman Problem.” *Bell System Technology Journal* 44:
+  2245–69.
 
-Applegate, David, William Cook, and Andre Rohe. 2003. “Chained
-Lin-Kernighan for Large Traveling Salesman Problems.” *INFORMS Journal
-on Computing* 15 (1): 82–92.
-<https://doi.org/10.1287/ijoc.15.1.82.15157>.
+- <span id="ref-Or1976"></span>Or, I. 1976. “Traveling Salesman-Type
+  Combinatorial Problems and Their Relation to the Logistics of Regional
+  Blood Banking.” PhD thesis, Northwestern University.
 
-</div>
+- <span id="ref-Reinelt1991"></span>Reinelt, Gerhard. 1991. “TSPLIB—a
+  Traveling Salesman Problem Library.” *ORSA Journal on Computing* 3
+  (4): 376–84. <https://doi.org/10.1287/ijoc.3.4.376>.
 
-<div id="ref-Croes1958" class="csl-entry">
-
-Croes, G. A. 1958. “A Method for Solving Traveling-Salesman Problems.”
-*Operations Research* 6 (6): 791–812.
-<https://doi.org/10.1287/opre.6.6.791>.
-
-</div>
-
-<div id="ref-Hahsler+Hornik2007" class="csl-entry">
-
-Hahsler, Michael, and Kurt Hornik. 2007. “TSP – Infrastructure for the
-Traveling Salesperson Problem.” *Journal of Statistical Software* 23
-(2): 1–21. <https://doi.org/10.18637/jss.v023.i02>.
-
-</div>
-
-<div id="ref-Kirkpatrick1983" class="csl-entry">
-
-Kirkpatrick, S., C. D. Gelatt, and M. P. Vecchi. 1983. “Optimization by
-Simulated Annealing.” *Science* 220 (4598): 671–80.
-<https://doi.org/10.1126/science.220.4598.671>.
-
-</div>
-
-<div id="ref-Reinelt1991" class="csl-entry">
-
-Reinelt, Gerhard. 1991. “TSPLIB—a Traveling Salesman Problem Library.”
-*ORSA Journal on Computing* 3 (4): 376–84.
-<https://doi.org/10.1287/ijoc.3.4.376>.
-
-</div>
-
-<div id="ref-Rosenkrantz1977" class="csl-entry">
-
-Rosenkrantz, Daniel J., Richard E. Stearns, and II Philip M. Lewis.
-1977. “An Analysis of Several Heuristics for the Traveling Salesman
-Problem.” *SIAM Journal on Computing* 6 (3): 563–81.
-<https://doi.org/10.1007/978-1-4020-9688-4_3>.
-
-</div>
-
-</div>
+- <span id="ref-Rosenkrantz1977"></span>Rosenkrantz, Daniel J.,
+  Richard E. Stearns, and Philip M. Lewis II. 1977. “An Analysis of
+  Several Heuristics for the Traveling Salesman Problem.” *SIAM Journal
+  on Computing* 6 (3): 563–81.
+  <https://doi.org/10.1007/978-1-4020-9688-4_3>.

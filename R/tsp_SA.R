@@ -1,6 +1,6 @@
 #######################################################################
 # TSP - Traveling Salesperson Problem
-# Copyrigth (C) 2011 Michael Hahsler and Kurt Hornik
+# Copyright (C) 2011 Michael Hahsler and Kurt Hornik
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -67,6 +67,9 @@ tsp_SA <- function(x, control = NULL){
     maxit = 10000, # Number of iterations 
     trace = 0
   ), method = "SA")
+
+  if (n_of_cities(x) <= 1L)
+    return(TOUR(seq_len(n_of_cities(x)), "sa", x))
 
   if (control$verbose) 
     control$trace <- 1

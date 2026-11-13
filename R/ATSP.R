@@ -1,6 +1,6 @@
 #######################################################################
 # TSP - Traveling Salesperson Problem
-# Copyrigth (C) 2011 Michael Hahsler and Kurt Hornik
+# Copyright (C) 2011 Michael Hahsler and Kurt Hornik
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,11 +68,21 @@
 #' image(atsp, tour)
 #' @export
 ATSP <- function(x, labels = NULL, method = NULL) {
-    if(inherits(x, "ATSP")) return(x)
+    if (inherits(x, "ATSP")) {
+        labels <- .validate_labels(labels, n_of_cities(x))
+        if (!is.null(labels))
+            dimnames(x) <- list(labels, labels)
+        method <- .validate_method(method)
+        if (!is.null(method))
+            attr(x, "method") <- method
+        return(x)
+    }
 
     atsp <- as.ATSP(x)
 
+    labels <- .validate_labels(labels, n_of_cities(atsp))
     if(!is.null(labels)) dimnames(atsp) <- list(labels, labels)
+    method <- .validate_method(method)
     if(!is.null(method)) attr(atsp, "method") <- method
 
     atsp
@@ -90,11 +100,11 @@ as.ATSP.matrix <- function(x){
     if(!.isSquare(x)) stop("ATSP requires a square matrix")
 
     ## check for NAs
-    if(any(is.nan(x))) stop(paste(sQuote("NAs"), "not supported"))
+    if(anyNA(x)) stop(paste(sQuote("NAs"), "not supported"))
 
     ## make sure we have labels
     if(is.null(dimnames(x)))
-        dimnames(x) <- list(1:dim(x)[1], 1: dim(x)[1])
+        dimnames(x) <- list(seq_len(nrow(x)), seq_len(ncol(x)))
     if(is.null(colnames(x)))  colnames(x) <- rownames(x)
     if(is.null(rownames(x)))  rownames(x) <- colnames(x)
 

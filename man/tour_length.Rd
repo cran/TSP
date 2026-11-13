@@ -28,7 +28,7 @@ tour_length(x, ...)
 
 \item{order}{an object of class \code{TOUR}}
 
-\item{tsp}{as TSP object.}
+\item{tsp}{a TSP object.}
 }
 \description{
 Calculate the length of a \link{TOUR} for a \link{TSP}.
@@ -56,10 +56,9 @@ tour_length(tour)
 tour_length(tour, USCA50)
 }
 \seealso{
-Other TOUR: 
-\code{\link{TOUR}()},
-\code{\link{cut_tour}()},
-\code{\link{solve_TSP}()}
+Other TOUR:
+\code{\link[=TOUR]{TOUR()}},
+\code{\link[=cut_tour]{cut_tour()}}
 }
 \author{
 Michael Hahsler
